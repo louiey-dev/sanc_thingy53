@@ -1,0 +1,10 @@
+identifier: sanc_thingy53/nrf5340/cpunet
+name: thngy53 board based porject
+vendor: sanc
+type: mcu
+arch: arm
+ram: 64
+flash: 92
+toolchain:
+  - zephyr
+supported: []

@@ -1,0 +1,55 @@
+{
+    "nrf-connect.applications": [
+        "${workspaceFolder}"
+    ],
+    "nrf-connect.debugging.bindings": {
+        "${workspaceFolder}/build/thingy53": "Launch thingy53/build/thingy53",
+        "${workspaceFolder}/build": "Launch thingy53/build"
+    },
+    "commands.commands": [
+        {
+            "text": "Source",
+            "tooltip": "Source the ncs environment",
+            "color": "#0000FF",
+            "command": "workbench.action.terminal.sendSequence",
+            "arguments": [
+                {
+                    "text": "get_ncs\n"
+                }
+            ]
+        },
+        {
+            "text": "Build",
+            "tooltip": "build project",
+            "color": "#00FF00",
+            "command": "workbench.action.terminal.sendSequence",
+            "arguments": [
+                {
+                    "text": "west build\n"
+                }
+            ]
+        },
+        {
+            "text": "Flash Jtag",
+            "tooltip": "flash over Jtag",
+            "color": "#FFCC00",
+            "command": "workbench.action.terminal.sendSequence",
+            "arguments": [
+                {
+                    "text": "./flash.sh\n"
+                }
+            ]
+        },
+        {
+            "text": "Flash DFU",
+            "tooltip": "flash over DFU",
+            "color": "#00FFFF",
+            "command": "workbench.action.terminal.sendSequence",
+            "arguments": [
+                {
+                    "text": "./flash_usb\n"
+                }
+            ]
+        }
+    ]
+}

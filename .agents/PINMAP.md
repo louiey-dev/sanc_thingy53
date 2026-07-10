@@ -1,0 +1,66 @@
+## Definition of nRF5340 thingy53 board pin map
+
+- FEM(Front End Module) Control (nRF21540)
+    - FEM_MODE : P1.12
+    - FEM_RX_EN : P1.11
+    - FEM_TX_EN : P0.30
+    - FEM_SEL : P1.10
+    - FEM_CSN : P0.24
+    - SPI_SCK : P0.29
+    - SPI_MISO : P0.25
+    - SPI_MOSI : P0.28
+- POWER Control (PMIC : nPM1100)
+    - PMIC_ERR : P1.01
+    - PMIC_CHG : P1.00
+    - PMIC_ISET : P0.07
+    - PMIC_MODE :
+    - 3V3_ENABLE : P0.15
+    - SENS_PWR_CTRL : P0.31
+    - BAT_MEAS : P0.06 (AIN2)
+    - BAT_ENABLE : P0.16
+- SENSORS
+    - ADXL362 : Low power accelerometer
+        - SPI_SCK : P0.29
+        - SPI_MISO : P0.25
+        - SPI_MOSI : P0.28
+        - ACC_CS : P0.22
+        - ACC_INT : P0.19
+    - BMI270@0x68 : Accelerometer and gyroscope
+        - SPI_SCK : P0.29
+        - SPI_MISO : P0.25
+        - SPI_MOSI : P0.28
+        - BMI_CS : P1.04
+        - BMI_INT : P0.23
+    - BMM150@0x10 : Magnetometer
+        - I2C_SDA : P1.02
+        - I2C_SCL : P1.03
+        - BMM_INT : P0.20
+        - BMM_RDY : P0.21
+    - BME688@0x76 : Humidity, temperature, pressure
+        - I2C_SDA : P1.02
+        - I2C_SCL : P1.03
+    - BH1749NUC@0x38 : Color sensor
+        - I2C_SDA : P1.02
+        - I2C_SCL : P1.03
+        - BH_INT : P1.05
+    - Buzzer
+        - BUZZER : P1.15
+    - LED
+        - LED_RED : P1.08
+        - LED_GREEN : P1.06
+        - LED_BLUE : P1.07
+    - FSA2466UMX : Accelerometer disconnect switch
+        - SENS_PWR_CTRL : P0.31
+    - VM3011@0x60 : Microphone
+        - MIC_DIN : P0.27
+        - MIC_CLK : P1.09
+        - MIC_DOUT : P0.25
+- Interface
+    - External Flash memory : MX25R6435F
+        - EXT_FLASH_CS : P0.18 (QSPI_CS)
+        - EXT_FLASH_SCK : P0.17 (QSPI_CLK)
+        - EXT_FLASH_MISO : P0.14 (QSPI_IO0)
+        - EXT_FLASH_MOSI : P0.13 (QSPI_IO1)
+- Buttons
+    - Button1 : P1.14
+    - Button2 : P1.13

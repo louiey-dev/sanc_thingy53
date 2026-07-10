@@ -1,0 +1,9 @@
+board:
+  name: sanc_thingy53
+  full_name: sanc_thingy53
+  vendor: sanc
+  socs:
+  - name: nrf5340
+    variants:
+    - name: ns
+      cpucluster: cpuapp

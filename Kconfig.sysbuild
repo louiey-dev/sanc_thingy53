@@ -1,0 +1,8 @@
+# Kconfig.sysbuild - Sysbuild configuration for nRF5340 dual-core setup
+config NRF_DEFAULT_IPC_RADIO
+	default y
+
+config NETCORE_IPC_RADIO_BT_HCI_IPC
+	default y
+
+source "share/sysbuild/Kconfig"

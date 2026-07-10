@@ -1,0 +1,56 @@
+/dts-v1/;
+
+#include <nordic/nrf5340_cpunet_qkaa.dtsi>
+#include "sanc_thingy53-pinctrl.dtsi"
+
+/ {
+	model = "thngy53 board based porject";
+	compatible = "sanc,sanc-thingy53-cpunet";
+
+	chosen {
+		zephyr,sram = &sram1;
+		zephyr,flash = &flash1;
+		zephyr,code-partition = &slot0_partition;
+		zephyr,bt-hci-ipc = &ipc0;
+		nordic,802154-spinel-ipc = &ipc0;
+		zephyr,ieee802154 = &ieee802154;
+	};
+};
+
+&ieee802154 {
+	status = "okay";
+};
+
+&flash1 {
+	partitions {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		boot_partition: partition@0 {
+			compatible = "zephyr,mapped-partition";
+			label = "mcuboot";
+			reg = <0x0 DT_SIZE_K(48)>;
+		};
+
+		slot0_partition: partition@c000 {
+			compatible = "zephyr,mapped-partition";
+			label = "image-0";
+			reg = <0xc000 DT_SIZE_K(92)>;
+		};
+
+		slot1_partition: partition@23000 {
+			compatible = "zephyr,mapped-partition";
+			label = "image-1";
+			reg = <0x23000 DT_SIZE_K(92)>;
+		};
+
+		storage_partition: partition@3a000 {
+			compatible = "zephyr,mapped-partition";
+			label = "storage";
+			reg = <0x3a000 DT_SIZE_K(24)>;
+		};
+	};
+};
+
+#include "sanc_thingy53-shared_sram.dtsi"

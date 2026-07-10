@@ -1,0 +1,29 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "nrf-connect",
+			"request": "launch",
+			"name": "Launch thingy53/build/thingy53",
+			"config": "${workspaceFolder}/build/thingy53",
+			"device": "nRF5340_xxAA_APP",
+			"gdbServerArgs": [
+				"-device",
+				"nRF5340_xxAA_APP"
+			],
+			"runToEntryPoint": "main"
+		},
+		{
+			"type": "nrf-connect",
+			"request": "launch",
+			"name": "Launch thingy53/build",
+			"config": "${workspaceFolder}/build",
+			"device": "nRF5340_xxAA_APP",
+			"gdbServerArgs": [
+				"-device",
+				"nRF5340_xxAA_APP"
+			],
+			"runToEntryPoint": "main"
+		}
+	]
+}

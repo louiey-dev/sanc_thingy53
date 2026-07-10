@@ -1,0 +1,10 @@
+identifier: sanc_thingy53/nrf5340/cpuapp
+name: thngy53 board based porject
+vendor: sanc
+type: mcu
+arch: arm
+ram: 448
+flash: 448
+toolchain:
+  - zephyr
+supported: []
