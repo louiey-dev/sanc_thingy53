@@ -21,7 +21,6 @@ extern "C" {
 #include <stdio.h>
 
 #include <zephyr/kernel.h> // for bool
-#include <zephyr/drivers/gpio.h>
 #include <zephyr/logging/log.h>
 
 #define LOGD printk
@@ -53,14 +52,12 @@ extern "C" {
 
 #define BSP_DEFAULT_NUS_DURATION 5 // Default NUS duration in seconds
 
-extern const struct gpio_dt_spec dk_led[];
-extern const size_t dk_led_size;
-
 typedef struct BSP_S
 {
     bool isInit;
 
     uint32_t nus_duration; // NUS duration in seconds
+    uint32_t led_pwm_period; // LED PWM period in mili seconds
     /************************************/
 
 } BSP_ST;
@@ -73,12 +70,51 @@ enum BSP_ERROR_EN
 };
 
 /***************************************************
+ * MACROs
+ **************************************************/
+#define MAC_CONFIG_GPIO_OR_RETURN(spec, flags)                           \
+        do {                                                            \
+            if (!gpio_is_ready_dt(&(spec))) {                           \
+                LOG_ERR("%s is not ready", #spec);                      \
+                return -ENODEV;                                         \
+            }                                                           \
+            int __ret = gpio_pin_configure_dt(&(spec), (flags));        \
+            if (__ret < 0) {                                            \
+                LOG_ERR("Failed to configure %s: %d", #spec, __ret);    \
+                return __ret;                                           \
+            }                                                           \
+        } while (0)
+
+#define LOG_FLOAT_FMT "%d.%02d"
+#define LOG_FLOAT_VAL(f) \
+    ((int)(f)), \
+    ((int)(((f) - (int)(f)) * 100.0f < 0 ? -(((f) - (int)(f)) * 100.0f) : (((f) - (int)(f)) * 100.0f)))
+
+/**************************************************/
+
+/***************************************************
  * BSP APIs
  **************************************************/
 int bsp_init(void);
 int bsp_led_init(void);
 int bsp_led_toggle(int led_offset);
 int bsp_led_control(int led_offset, bool state);
+
+int bsp_gpio_init(void);
+
+int bsp_led_pwm_init(void);
+int bsp_led_pwm_red(float brightness);
+int bsp_led_pwm_green(float brightness);
+int bsp_led_pwm_blue(float brightness);
+int bsp_led_pwm_set_color(float r,float g, float b);
+int bsp_led_pwm_on(void);
+int bsp_led_pwm_off(void);
+int bsp_led_pwm_blink_red(float brightness,int32_t up,int32_t down);
+int bsp_led_pwm_blink_green(float brightness,int32_t up,int32_t down);
+int bsp_led_pwm_blink_blue(float brightness,int32_t up,int32_t down);
+int bsp_led_pwm_blink_color(float r,float g, float b,int32_t up,int32_t down);
+
+int bsp_msg_parser(const char *msg, size_t len);
 
 bool bsp_uart_gets(uint8_t *pbLine);
 int bsp_reset(void);

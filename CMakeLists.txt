@@ -6,11 +6,17 @@ project(sanc_thingy53)
 target_sources(app PRIVATE 
     src/main.c
     src/bsp/bsp.c
+    src/bsp/bsp_led.c
+    src/bsp/bsp_led_pwm.c
+    src/bsp/bsp_gpio.c
+    src/bsp/bsp_adc.c
+    src/bsp/bsp_msg_parser.c
     src/shell/shell_led.c
+    src/shell/shell_led_pwm.c
     src/shell/shell_system.c
 )
 
 target_include_directories(app PRIVATE
     src/bsp
-    src/cli
+    src/shell
 )

@@ -11,4 +11,4 @@ fi
 
 # Flash the dual-core images using west with the nrfjprog runner
 echo "Flashing sanc_thingy53 application..."
-west flash --runner nrfjprog --domain thingy53
+west flash --runner nrfjprog --domain sanc_thingy53

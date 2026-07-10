@@ -32,6 +32,13 @@ west build
 ---
 ## History
 
+- 2026.07.10
+    - basic framework is done
+        - zephyr shell
+        - bsp_xx
+        - app.overlay for dts
+        - Tx/Rx via BLE
+        - led control via IO and PWM
 ---
 ## Info
 

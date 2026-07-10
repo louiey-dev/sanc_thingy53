@@ -1,0 +1,176 @@
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/adc/adc.h>
+#include <zephyr/dt-bindings/adc/nrf-saadc.h>
+#include <zephyr/dt-bindings/pinctrl/nrf-pinctrl.h>
+#include <zephyr/dt-bindings/pwm/pwm.h>
+
+/ {
+	aliases {
+		pwm-led0 = &red_led_pwm;
+		pwm-led1 = &green_led_pwm;
+		pwm-led2 = &blue_led_pwm;
+	};
+
+	zephyr,user {
+		battery-charge-gpios = <&gpio1 0 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+	};
+
+	fem-gpios {
+		compatible = "gpio-leds";
+
+		fem_mode_pin: fem-mode-pin {
+			gpios = <&gpio1 12 1>;
+		};
+
+		fem_rx_en_pin: fem-rx-en-pin {
+			gpios = <&gpio1 11 1>;
+		};
+
+		fem_tx_en_pin: fem-tx-en-pin {
+			gpios = <&gpio0 30 1>;
+		};
+
+		fem_sel_pin: fem-sel-pin {
+			gpios = <&gpio1 10 1>;
+		};
+	};
+
+	pmic-gpios {
+		compatible = "gpio-leds";
+
+		pmic_iset_pin: pmic-iset-pin {
+			gpios = <&gpio0 7 1>;
+		};
+
+		pmic_err_pin: pmic-err-pin {
+			gpios = <&gpio1 1 1>;
+		};
+
+		pmic_chg_pin: pmic-chg-pin {
+			gpios = <&gpio1 0 1>;
+		};
+	};
+
+	power-gpios {
+		compatible = "gpio-leds";
+
+		pwr_3v3_en_pin: pwr-3v3-en-pin {
+			gpios = <&gpio0 15 1>;
+		};
+
+		pwr_sens_pwr_ctrl_pin: pwr-sens-pwr-ctrl-pin {
+			gpios = <&gpio0 31 1>;
+		};
+	};
+
+	batt-gpios {
+		compatible = "gpio-leds";
+
+		batt_measure_en_pin: batt-measure-en-pin {
+			gpios = <&gpio0 16 1>;
+		};
+	};
+
+	sensor-gpios {
+		compatible = "gpio-leds";
+
+		adxl_int_pin: adxl-int-pin {
+			gpios = <&gpio0 19 1>;
+		};
+
+		adxl_cs_pin: adxl-cs-pin {
+			gpios = <&gpio0 22 1>;
+		};
+
+		bmi_int_pin: bmi-int-pin {
+			gpios = <&gpio0 23 1>;
+		};
+
+		bmi_cs_pin: bmi-cs-pin {
+			gpios = <&gpio1 4 1>;
+		};
+
+		bmm_int_pin: bmm-int-pin {
+			gpios = <&gpio0 20 1>;
+		};
+
+		bmm_rdy_pin: bmm-rdy-pin {
+			gpios = <&gpio0 21 1>;
+		};
+
+		bh_int_pin: bh-int-pin {
+			gpios = <&gpio1 5 1>;
+		};
+
+		sens_pwr_ctrl_pin: sens-pwr-ctrl-pin {
+			gpios = <&gpio0 31 1>;
+		};
+	};
+
+	vbatt: vbatt {
+		compatible = "voltage-divider";
+		io-channels = <&adc 2>;
+		output-ohms = <180000>;
+		full-ohms = <(1500000 + 180000)>;
+		power-gpios = <&gpio0 16 0>;
+	};
+
+	pwmleds {
+		compatible = "pwm-leds";
+		red_led_pwm: led-pwm-0 {
+			pwms = <&pwm0 0 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
+			label = "Red PWM LED";
+		};
+		green_led_pwm: led-pwm-1 {
+			pwms = <&pwm0 1 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
+			label = "Green PWM LED";
+		};
+		blue_led_pwm: led-pwm-2 {
+			pwms = <&pwm0 2 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
+			label = "Blue PWM LED";
+		};
+	};
+};
+
+/* Enable SAADC and configure Channel 2 for P0.06 */
+&adc {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	status = "okay";
+
+	channel@2 {
+		reg = <2>;
+		zephyr,gain = "ADC_GAIN_1_6";          /* Gain of 1/6 for scaling battery voltage */
+		zephyr,reference = "ADC_REF_INTERNAL"; /* Uses nRF internal 0.6V reference */
+		zephyr,vref-mv = <600>;
+		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		zephyr,resolution = <12>;             /* 12-bit resolution */
+		zephyr,input-positive = <NRF_SAADC_AIN2>; /* AIN2 maps to P0.06 */
+	};
+};
+
+&pinctrl {
+	pwm0_default: pwm0_default {
+		group1 {
+			psels = <NRF_PSEL(PWM_OUT0, 1, 8)>,
+				<NRF_PSEL(PWM_OUT1, 1, 6)>,
+				<NRF_PSEL(PWM_OUT2, 1, 7)>;
+		};
+	};
+
+	pwm0_sleep: pwm0_sleep {
+		group1 {
+			psels = <NRF_PSEL(PWM_OUT0, 1, 8)>,
+				<NRF_PSEL(PWM_OUT1, 1, 6)>,
+				<NRF_PSEL(PWM_OUT2, 1, 7)>;
+			low-power-enable;
+		};
+	};
+};
+
+&pwm0 {
+	status = "okay";
+	pinctrl-0 = <&pwm0_default>;
+	pinctrl-1 = <&pwm0_sleep>;
+	pinctrl-names = "default", "sleep";
+};

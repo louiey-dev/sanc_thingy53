@@ -31,5 +31,5 @@ echo ""
 read -p "Press [Enter] when the Thingy:53 is in DFU mode and connected..."
 
 # Step 4: Program the device
-echo "Programming the device with build/thingy53/zephyr/zephyr.signed.bin..."
-nrfutil device program --firmware build/thingy53/zephyr/zephyr.signed.bin --traits MCUboot
+echo "Programming the device with build/sanc_thingy53/zephyr/zephyr.signed.bin..."
+nrfutil device program --firmware build/sanc_thingy53/zephyr/zephyr.signed.bin --traits MCUboot

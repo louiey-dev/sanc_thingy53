@@ -23,13 +23,35 @@
       ]
     },
     {
-      "text": "Flash Jtag",
+      "text": "pristine",
+      "tooltip": "build project",
+      "color": "#FF0000",
+      "command": "workbench.action.terminal.sendSequence",
+      "arguments": [
+        {
+          "text": "west build -p always -b sanc_thingy53/nrf5340/cpuapp\n"
+        }
+      ]
+    },
+    {
+      "text": "Flash",
       "tooltip": "flash over Jtag",
       "color": "#FFCC00",
       "command": "workbench.action.terminal.sendSequence",
       "arguments": [
         {
           "text": "./flash.sh\n"
+        }
+      ]
+    },
+    {
+      "text": "Flash Full",
+      "tooltip": "flash all over Jtag",
+      "color": "#FFFF00",
+      "command": "workbench.action.terminal.sendSequence",
+      "arguments": [
+        {
+          "text": "./flash_full.sh\n"
         }
       ]
     },

@@ -23,8 +23,8 @@
         - SPI_SCK : P0.29
         - SPI_MISO : P0.25
         - SPI_MOSI : P0.28
-        - ACC_CS : P0.22
-        - ACC_INT : P0.19
+        - ADXL_CS : P0.22
+        - ADXL_INT : P0.19
     - BMI270@0x68 : Accelerometer and gyroscope
         - SPI_SCK : P0.29
         - SPI_MISO : P0.25

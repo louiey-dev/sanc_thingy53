@@ -68,6 +68,8 @@ static void received(struct bt_conn *conn, const void *data, uint16_t len, void 
 	ARG_UNUSED(ctx);
 
 	LOG_INF("%s() - Len: %d, Message: %.*s\n", __func__, len, len, (char *)data);
+
+	bsp_msg_parser((const char *)data, len);
 }
 
 struct bt_nus_cb nus_listener = {
