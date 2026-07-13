@@ -132,6 +132,8 @@ int bsp_gpio_init(void);
 int bsp_gpio_3v3_control(int state);
 int bsp_gpio_sens_pwr_control(int state);
 int bsp_gpio_battery_control(int state);
+int bsp_gpio_fem_control(int mode, int state);
+int bsp_gpio_pmic_control(int mode, int state);
 
 int bsp_buzzer_init(void);
 int bsp_buzzer_scale(int scale, uint32_t duration_ms);
@@ -142,7 +144,7 @@ int bsp_led_pwm_init(void);
 int bsp_led_pwm_red(float brightness);
 int bsp_led_pwm_green(float brightness);
 int bsp_led_pwm_blue(float brightness);
-int bsp_led_pwm_set_color(float r,float g, float b);
+int bsp_led_pwm_set_color(float r,float g, float b, float brightness);
 int bsp_led_pwm_on(void);
 int bsp_led_pwm_off(void);
 int bsp_led_pwm_blink_red(float brightness,int32_t up,int32_t down);

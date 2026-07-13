@@ -73,16 +73,21 @@ static int cmd_led_pwm(const struct shell *sh, size_t argc, char **argv)
         return 0;
     } else if(strcmp(argv[1], "color") == 0) {
         if (argc < 5) {
-            shell_error(sh, "Usage: led_pwm color <r> <g> <b>");
+            shell_error(sh, "Usage: led_pwm color <r> <g> <b> <brightness>");
             return -EINVAL;
         }
-        if (argc == 5) {
-            if(bsp_led_pwm_set_color(atof(argv[2]), atof(argv[3]), atof(argv[4])) < 0) {
+        if (argc == 6) {
+            if(bsp_led_pwm_set_color(atof(argv[2]), atof(argv[3]), atof(argv[4]), atof(argv[5])) < 0) {
                 shell_error(sh, "Failed to set LED color");
                 return -EINVAL;
             }
             shell_print(sh, "LED color set to R: %d.%02d, G: %d.%02d, B: %d.%02d", LOG_FLOAT_VAL(atof(argv[2])), LOG_FLOAT_VAL(atof(argv[3])), LOG_FLOAT_VAL(atof(argv[4])));
             return 0;
+        }
+        else
+        {
+            shell_error(sh, "Usage: led_pwm color <r> <g> <b> <brightness>");
+            return -EINVAL;
         }
     } else if(strcmp(argv[1], "on") == 0) {
         bsp_led_pwm_on();

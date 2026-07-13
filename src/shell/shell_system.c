@@ -22,6 +22,8 @@
 
 /** EXTERNS (extern xx) **/
 extern BSP_ST g_Bsp;
+
+extern const char *FW_VER_STRING;
 /*****************************************************************/
 
 /** STATICS (static xx) **/
@@ -58,6 +60,10 @@ static int cmd_system(const struct shell *sh, size_t argc, char **argv)
         shell_print(sh, "System reset");
         k_msleep(atoi(argv[2])); // sleep with given duration in msec
         bsp_reset();
+        return 0;
+    } if(strcmp(argv[1], "ver") == 0 ) {
+        shell_print(sh, "System version");
+        shell_print(sh, "App Ver : %s", FW_VER_STRING);
         return 0;
     } else {
         shell_error(sh, "Invalid command. Use 'nus_du'");

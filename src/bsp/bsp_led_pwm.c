@@ -133,7 +133,7 @@ int bsp_led_pwm_green(float brightness)
 /**
  * @brief Set the blue led brightness
  * 
- * @param brightness 
+ * @param brightness 0.0 ~ 1.0
  * @return int 0 : success, -1 : error 
  */
 int bsp_led_pwm_blue(float brightness)
@@ -152,21 +152,23 @@ int bsp_led_pwm_blue(float brightness)
  * @param r 0.0 ~ 1.0
  * @param g 0.0 ~ 1.0
  * @param b 0.0 ~ 1.0
+ * @param brightness 0.0 ~ 1.0
  * @return int 0 : success, -1 : error 
  */
-int bsp_led_pwm_set_color(float r,float g, float b)
+int bsp_led_pwm_set_color(float r,float g, float b, float brightness)
 {
     CHECK_PWM_INIT_OR_RETURN();
 
-	int ret = 0;
-    uint32_t red = r * g_Bsp.led_pwm_period;
-    uint32_t green = g * g_Bsp.led_pwm_period;
-    uint32_t blue = b * g_Bsp.led_pwm_period;
-	pwm_set_pulse_dt(&red_pwm_led, red);
-	pwm_set_pulse_dt(&green_pwm_led, green);
-	pwm_set_pulse_dt(&blue_pwm_led, blue);
-    LOG_INF("Setting LED color to R: %.2f, G: %.2f, B: %.2f", r, g, b);
-	return 0;
+    uint32_t red = r * brightness * g_Bsp.led_pwm_period;
+    uint32_t green = g * brightness * g_Bsp.led_pwm_period;
+    uint32_t blue = b * brightness * g_Bsp.led_pwm_period;
+
+    pwm_set_pulse_dt(&red_pwm_led, red);
+    pwm_set_pulse_dt(&green_pwm_led, green);
+    pwm_set_pulse_dt(&blue_pwm_led, blue);
+
+    LOG_INF("Setting LED color to R: %.2f, G: %.2f, B: %.2f (Brightness: %.2f)", r, g, b, brightness);
+    return 0;
 }
 
 /**
@@ -263,7 +265,7 @@ int bsp_led_pwm_blink_blue(float brightness,int32_t up,int32_t down)
 int bsp_led_pwm_blink_color(float r,float g, float b,int32_t up,int32_t down)
 {
     CHECK_PWM_INIT_OR_RETURN();
-	bsp_led_pwm_set_color(r,g,b);
+	bsp_led_pwm_set_color(r,g,b, 1.0);
 	k_msleep(up);
 	bsp_led_pwm_off();
 	k_msleep(down);

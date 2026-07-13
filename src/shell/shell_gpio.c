@@ -50,6 +50,10 @@ static int cmd_gpio(const struct shell *sh, size_t argc, char **argv)
         ret = bsp_gpio_3v3_control(atoi(argv[2]));
     } else if(strcmp(argv[1], "sens") == 0) {
         ret = bsp_gpio_sens_pwr_control(atoi(argv[2]));
+    } else if(strcmp(argv[1], "fem") == 0) {
+        /* TODO */
+    } else if(strcmp(argv[1], "pmic") == 0) {
+        /* TODO */
     } else {
         shell_error(sh, "Invalid command. Use 'init/3v/sens'");
         return -EINVAL;

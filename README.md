@@ -48,6 +48,7 @@ west build
         - bme688 : pressure/humi/temp/gas sensor so I don't feel there needs external interrupt
         - bmi270 : connected DRDY pin so continuously issues DRDY INT
         - bmm150 : connected DRDY pin so continuously issues DRDY INT
+    - add GPIO control for FEM/PMIC
 ---
 ## Info
 

@@ -18,6 +18,11 @@
 #include <zephyr/init.h>
 #include "bsp.h"
 
+/**
+ * @brief Early sensor power on
+ * 
+ * @return int 
+ */
 static int early_sensor_power_on(void)
 {
     // Enable 3.3V regulator (P0.15 is active-low)
@@ -79,6 +84,14 @@ static struct gpio_callback button1_cb_data;
 /*****************************************************************/
 
 /** FUNCTIONS (int bsp_xx()) **/
+
+/**
+ * @brief Button pressed handler from external INT
+ * 
+ * @param port 
+ * @param cb 
+ * @param pins 
+ */
 static void button_pressed_handler(const struct device *port, struct gpio_callback *cb, gpio_port_pins_t pins)
 {
     if (pins & BIT(button0.pin)) {
@@ -206,12 +219,81 @@ int bsp_gpio_battery_control(int state)
     return ret;
 }
 
+/**
+ * @brief Read sensor power status
+ * 
+ * @return int 0 : Off, 1 : On
+ */
 int bsp_sensor_power_status(void)
 {
     return gpio_pin_get_dt(&pwr_sens_pwr_ctrl_pin);
 }
 
+/**
+ * @brief Read board power status
+ * 
+ * @return int 0 : Off, 1 : On
+ */
 int bsp_board_power_3v3_status(void)
 {
     return gpio_pin_get_dt(&pwr_3v3_en_pin);
+}
+
+/**
+ * @brief Control FEM IO control
+ * 
+ * @param mode 0 : fem_mode_pin, 1 : fem_rx_en_pin, 2 : fem_tx_en_pin, 3 : fem_sel_pin
+ * @param state 0 : Off, 1 : On
+ * @return int 
+ */
+int bsp_gpio_fem_control(int mode, int state)
+{
+    const struct gpio_dt_spec *spec;
+    char* label = "";
+
+    switch(mode)
+    {
+        case 0: spec = &fem_mode_pin; label = "fem_mode"; break;
+        case 1: spec = &fem_rx_en_pin; label = "fem_rx_en"; break;
+        case 2: spec = &fem_tx_en_pin; label = "fem_tx_en"; break;
+        case 3: spec = &fem_sel_pin; label = "fem_sel"; break;
+        default: LOG_ERR("Invalid FEM mode %d", mode); return -1;
+    }
+    int ret = gpio_pin_set_dt(spec, state);
+    if (ret < 0)
+    {
+        LOG_ERR("Failed to set FEM pin %d", ret);
+        return -1;
+    }
+    LOG_INF("FEM %s  %s", label, state ? "ON" : "OFF");
+    return 0;
+}
+
+/**
+ * @brief Control PMIC control
+ * 
+ * @param mode 0 : pmic_iset_pin, 1 : pmic_err_pin, 2 : pmic_chg_pin
+ * @param state 0 : Off, 1 : On
+ * @return int 
+ */
+int bsp_gpio_pmic_control(int mode, int state)
+{
+    const struct gpio_dt_spec *spec;
+    char* label = "";
+
+    switch(mode)
+    {
+        case 0: spec = &pmic_iset_pin; label = "pmic_iset"; break;
+        case 1: spec = &pmic_err_pin; label = "pmic_err"; break;
+        case 2: spec = &pmic_chg_pin; label = "pmic_chg"; break;
+        default: LOG_ERR("Invalid PMIC mode %d", mode); return -1;
+    }
+    int ret = gpio_pin_set_dt(spec, state);
+    if (ret < 0)
+    {
+        LOG_ERR("Failed to set PMIC pin %d", ret);
+        return -1;
+    }
+    LOG_INF("PMIC %s  %s", label, state ? "ON" : "OFF");
+    return 0;
 }
