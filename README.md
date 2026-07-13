@@ -39,6 +39,8 @@ west build
         - app.overlay for dts
         - Tx/Rx via BLE
         - led control via IO and PWM
+- 2026.07.13
+    - add buzzer/adc for batt/gpio
 ---
 ## Info
 

@@ -49,10 +49,13 @@ int bsp_init(void)
 {
     g_Bsp.isInit = true;
     g_Bsp.nus_duration = BSP_DEFAULT_NUS_DURATION;
+
     bsp_led_init();
     bsp_led_pwm_init();
     bsp_gpio_init();
-
+    bsp_adc_init();
+    bsp_buzzer_init();
+    
     return 0;
 }
 

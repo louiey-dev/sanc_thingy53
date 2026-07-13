@@ -83,6 +83,10 @@ static int set_led(const struct pwm_dt_spec pwm_led,float brightness){
     return ret;
 }
 
+/**
+ * @brief Initialize the led object
+ * @return int 0 : success, -1 : error 
+ */
 int bsp_led_pwm_init(void)
 {
     g_Bsp.led_pwm_period = PWM_PERIOD;
@@ -96,6 +100,11 @@ int bsp_led_pwm_init(void)
     return 0;
 }
 
+/**
+ * @brief Set the red led brightness
+ * @param brightness 0.0 ~ 1.0
+ * @return int 0 : success, -1 : error 
+ */
 int bsp_led_pwm_red(float brightness)
 {
     CHECK_PWM_INIT_OR_RETURN();
@@ -105,6 +114,13 @@ int bsp_led_pwm_red(float brightness)
     LOG_INF("Setting RED LED brightness to %.2f", brightness);
 	return set_led(red_pwm_led, brightness);
 }
+
+/**
+ * @brief Set the green led brightness
+ * 
+ * @param brightness 
+ * @return int 0 : success, -1 : error 
+ */
 int bsp_led_pwm_green(float brightness)
 {
     CHECK_PWM_INIT_OR_RETURN();
@@ -113,6 +129,13 @@ int bsp_led_pwm_green(float brightness)
     LOG_INF("Setting GREEN LED brightness to %.2f", brightness);
 	return set_led(green_pwm_led, brightness);
 }
+
+/**
+ * @brief Set the blue led brightness
+ * 
+ * @param brightness 
+ * @return int 0 : success, -1 : error 
+ */
 int bsp_led_pwm_blue(float brightness)
 {
     CHECK_PWM_INIT_OR_RETURN();
@@ -123,6 +146,14 @@ int bsp_led_pwm_blue(float brightness)
 	return set_led(blue_pwm_led, brightness);
 }
 
+/**
+ * @brief Set the color of the LED
+ * 
+ * @param r 0.0 ~ 1.0
+ * @param g 0.0 ~ 1.0
+ * @param b 0.0 ~ 1.0
+ * @return int 0 : success, -1 : error 
+ */
 int bsp_led_pwm_set_color(float r,float g, float b)
 {
     CHECK_PWM_INIT_OR_RETURN();
@@ -138,6 +169,10 @@ int bsp_led_pwm_set_color(float r,float g, float b)
 	return 0;
 }
 
+/**
+ * @brief Turn LED on with full brightness
+ * @return int 
+ */
 int bsp_led_pwm_on(void)
 {
 	CHECK_PWM_INIT_OR_RETURN();
@@ -148,6 +183,10 @@ int bsp_led_pwm_on(void)
 	return 0;
 }
 
+/**
+ * @brief Turn LED off
+ * @return int 
+ */
 int bsp_led_pwm_off(void)
 {
     CHECK_PWM_INIT_OR_RETURN();
@@ -158,6 +197,13 @@ int bsp_led_pwm_off(void)
 	return 0;
 }
 
+/**
+ * @brief Turn LED Red on with specified brightness
+ * @param brightness 0.0 ~ 1.0
+ * @param up on time in msec
+ * @param down down time in msec
+ * @return int 
+ */
 int bsp_led_pwm_blink_red(float brightness,int32_t up,int32_t down)
 {
     CHECK_PWM_INIT_OR_RETURN();
@@ -168,6 +214,14 @@ int bsp_led_pwm_blink_red(float brightness,int32_t up,int32_t down)
     LOG_INF("RED LED blinked");
 	return 0;
 }
+
+/**
+ * @brief Turn LED Green on with specified brightness
+ * @param brightness 0.0 ~ 1.0
+ * @param up on time in msec
+ * @param down down time in msec
+ * @return int 
+ */
 int bsp_led_pwm_blink_green(float brightness,int32_t up,int32_t down)
 {
     CHECK_PWM_INIT_OR_RETURN();
@@ -178,6 +232,14 @@ int bsp_led_pwm_blink_green(float brightness,int32_t up,int32_t down)
     LOG_INF("GREEN LED blinked");
 	return 0;
 }
+
+/**
+ * @brief Turn LED Blue on with specified brightness
+ * @param brightness 0.0 ~ 1.0
+ * @param up on time in msec
+ * @param down down time in msec
+ * @return int 
+ */
 int bsp_led_pwm_blink_blue(float brightness,int32_t up,int32_t down)
 {
     CHECK_PWM_INIT_OR_RETURN();
@@ -189,6 +251,15 @@ int bsp_led_pwm_blink_blue(float brightness,int32_t up,int32_t down)
 	return 0;
 }
 
+/**
+ * @brief Turn LED on with specified r/g/b brightness
+ * @param r 0.0 ~ 1.0
+ * @param g 0.0 ~ 1.0
+ * @param b 0.0 ~ 1.0
+ * @param up on time in msec
+ * @param down off time in msec
+ * @return int 
+ */
 int bsp_led_pwm_blink_color(float r,float g, float b,int32_t up,int32_t down)
 {
     CHECK_PWM_INIT_OR_RETURN();

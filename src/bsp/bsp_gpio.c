@@ -13,6 +13,7 @@
  */
 
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/pwm.h>
 #include "bsp.h"
 
 /** DEFINES (#define xx) **/
@@ -48,13 +49,30 @@ static const struct gpio_dt_spec bmm_rdy_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(bmm
 static const struct gpio_dt_spec bh_int_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(bh_int_pin), gpios);
 static const struct gpio_dt_spec sens_pwr_ctrl_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(sens_pwr_ctrl_pin), gpios);
 
+static const struct gpio_dt_spec button0 = GPIO_DT_SPEC_GET(DT_ALIAS(sw0), gpios);
+static const struct gpio_dt_spec button1 = GPIO_DT_SPEC_GET(DT_ALIAS(sw1), gpios);
 /*****************************************************************/
 
 /** LOCALS (m_xx) **/
 LOG_MODULE_REGISTER(bsp_gpio, CONFIG_LOG_DEFAULT_LEVEL);
 /*****************************************************************/
 
+/** CALLBACKS **/
+/* Required only if you are using Interrupt-driven configuration (Method B) */
+static struct gpio_callback button0_cb_data;
+static struct gpio_callback button1_cb_data;
+/*****************************************************************/
+
 /** FUNCTIONS (int bsp_xx()) **/
+static void button_pressed_handler(const struct device *port, struct gpio_callback *cb, gpio_port_pins_t pins)
+{
+    if (pins & BIT(button0.pin)) {
+        LOG_INF("Button 1 (sw0) pressed");
+    }
+    if (pins & BIT(button1.pin)) {
+        LOG_INF("Button 2 (sw1) pressed");
+    }
+}
 
 /**
  * @brief Initialize GPIO pins
@@ -62,6 +80,8 @@ LOG_MODULE_REGISTER(bsp_gpio, CONFIG_LOG_DEFAULT_LEVEL);
  */
 int bsp_gpio_init(void)
 {
+    int ret = 0;
+
     LOG_INF("GPIO initialization started");
 
     // Initialize GPIO pins for FEM control
@@ -103,6 +123,80 @@ int bsp_gpio_init(void)
     // External Flash memory : MX25R6435F
 
     // Buttons
+    MAC_CONFIG_GPIO_OR_RETURN(button0, GPIO_INPUT);
+    MAC_CONFIG_GPIO_OR_RETURN(button1, GPIO_INPUT);
 
+    // Configure interrupt trigger (edge to active state)
+    ret = gpio_pin_interrupt_configure_dt(&button0, GPIO_INT_EDGE_TO_ACTIVE);
+    if (ret < 0) {
+        LOG_ERR("Failed to configure interrupt on button0: %d", ret);
+        return ret;
+    }
+    ret = gpio_pin_interrupt_configure_dt(&button1, GPIO_INT_EDGE_TO_ACTIVE);
+    if (ret < 0) {
+        LOG_ERR("Failed to configure interrupt on button1: %d", ret);
+        return ret;
+    }
+
+    // Initialize and register callbacks
+    gpio_init_callback(&button0_cb_data, button_pressed_handler, BIT(button0.pin));
+    gpio_add_callback(button0.port, &button0_cb_data);
+
+    gpio_init_callback(&button1_cb_data, button_pressed_handler, BIT(button1.pin));
+    gpio_add_callback(button1.port, &button1_cb_data);
+    
     return 0;
+}
+
+/**
+ * @brief 3v3 voltage enable/disable
+ * @param state 
+ * @return int 0 : Success, -1 : Failure
+ */
+int bsp_gpio_3v3_control(int state)
+{
+    int ret = gpio_pin_set_dt(&pwr_3v3_en_pin, state);
+    if (ret < 0)
+    {
+        LOG_ERR("Failed to set GPIO pin %d", ret);
+        return -1;
+    }
+    LOG_INF("3V3 %s", state ? "ON" : "OFF");
+    return ret;
+}
+
+/**
+ * @brief Controls sensors power
+ * 
+ * @param state 1 : Sensor VCC on and BMI SPI enable, 0 : Sensor VCC off and BMI SPI disable
+ * @return int 
+ */
+int bsp_gpio_sens_pwr_control(int state)
+{
+    int ret = gpio_pin_set_dt(&pwr_3v3_en_pin, state);
+    if (ret < 0)
+    {
+        LOG_ERR("Failed to set GPIO pin %d", ret);
+        return -1;
+    }
+    LOG_INF("3V3 %s", state ? "ON" : "OFF");
+    return ret;
+}
+
+/**
+ * @brief Controls battery measurement
+ * 
+ * @param state 1 : Battery measure on, 0 : Battery measure off
+ * @return int 
+ */
+int bsp_gpio_battery_control(int state)
+{
+    int ret = gpio_pin_set_dt(&batt_measure_en_pin, state);
+    if (ret < 0)
+    {
+        LOG_ERR("Failed to set GPIO pin %d", ret);
+        return -1;
+    }
+    LOG_INF("Battery %s", state ? "ON" : "OFF");
+    return ret;
 }

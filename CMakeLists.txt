@@ -10,10 +10,17 @@ target_sources(app PRIVATE
     src/bsp/bsp_led_pwm.c
     src/bsp/bsp_gpio.c
     src/bsp/bsp_adc.c
+    src/bsp/bsp_buzzer.c
     src/bsp/bsp_msg_parser.c
+    src/bsp/bsp_utils.c
+    src/bsp/bsp_state_machine.c
     src/shell/shell_led.c
     src/shell/shell_led_pwm.c
     src/shell/shell_system.c
+    src/shell/shell_adc.c
+    src/shell/shell_gpio.c
+    src/shell/shell_sensors.c
+    src/shell/shell_buzzer.c
 )
 
 target_include_directories(app PRIVATE

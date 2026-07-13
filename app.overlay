@@ -9,10 +9,12 @@
 		pwm-led0 = &red_led_pwm;
 		pwm-led1 = &green_led_pwm;
 		pwm-led2 = &blue_led_pwm;
+		pwm-buzzer = &buzzer_pwm;
 	};
 
 	zephyr,user {
 		battery-charge-gpios = <&gpio1 0 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+		battery-err-gpios = <&gpio1 1 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
 	};
 
 	fem-gpios {
@@ -130,6 +132,15 @@
 			label = "Blue PWM LED";
 		};
 	};
+	/* Define the buzzer under the compatible "pwm-leds" class */
+        buzzers {
+            compatible = "pwm-leds";
+            buzzer_pwm: buzzer_pwm {
+                /* PWM1 channel 0, default period 4000 Hz, active high */
+                pwms = <&pwm1 0 PWM_HZ(4000) PWM_POLARITY_NORMAL>;
+                label = "PWM Buzzer";
+            };
+        };
 };
 
 /* Enable SAADC and configure Channel 2 for P0.06 */
@@ -166,11 +177,31 @@
 			low-power-enable;
 		};
 	};
+
+	pwm1_default: pwm1_default {
+		group1 {
+			psels = <NRF_PSEL(PWM_OUT0, 1, 15)>;
+		};
+	};
+
+	pwm1_sleep: pwm1_sleep {
+		group1 {
+			psels = <NRF_PSEL(PWM_OUT0, 1, 15)>;
+			low-power-enable;
+		};
+	};
 };
 
 &pwm0 {
 	status = "okay";
 	pinctrl-0 = <&pwm0_default>;
 	pinctrl-1 = <&pwm0_sleep>;
+	pinctrl-names = "default", "sleep";
+};
+
+&pwm1 {
+	status = "okay";
+	pinctrl-0 = <&pwm1_default>;
+	pinctrl-1 = <&pwm1_sleep>;
 	pinctrl-names = "default", "sleep";
 };

@@ -52,6 +52,16 @@ extern "C" {
 
 #define BSP_DEFAULT_NUS_DURATION 5 // Default NUS duration in seconds
 
+/* Octave 5 Frequencies (Recommended for Thingy:53 buzzer) */
+#define NOTE_DO   523
+#define NOTE_RE   587
+#define NOTE_MI   659
+#define NOTE_FA   698
+#define NOTE_SOL  784
+#define NOTE_LA   880
+#define NOTE_SI   988
+#define NOTE_DO2  1047
+
 typedef struct BSP_S
 {
     bool isInit;
@@ -101,6 +111,14 @@ int bsp_led_toggle(int led_offset);
 int bsp_led_control(int led_offset, bool state);
 
 int bsp_gpio_init(void);
+int bsp_gpio_3v3_control(int state);
+int bsp_gpio_sens_pwr_control(int state);
+int bsp_gpio_battery_control(int state);
+
+int bsp_buzzer_init(void);
+int bsp_buzzer_scale(int scale, uint32_t duration_ms);
+int bsp_buzzer_beep(uint32_t frequency_hz, uint32_t duration_ms);
+int bsp_buzzer_tone(uint32_t frequency_hz);
 
 int bsp_led_pwm_init(void);
 int bsp_led_pwm_red(float brightness);
@@ -115,6 +133,12 @@ int bsp_led_pwm_blink_blue(float brightness,int32_t up,int32_t down);
 int bsp_led_pwm_blink_color(float r,float g, float b,int32_t up,int32_t down);
 
 int bsp_msg_parser(const char *msg, size_t len);
+
+int bsp_adc_init(void);
+int bsp_adc_battery_err(void);
+int bsp_adc_battery_charging(void);
+int bsp_adc_battery_raw(int32_t *raw_val_out);
+int bsp_adc_battery_mv(int32_t *mv_val_out);
 
 bool bsp_uart_gets(uint8_t *pbLine);
 int bsp_reset(void);
