@@ -1,7 +1,7 @@
 /*
  * @file : bsp_sensor_bmm150.c
  * 
- * @brief : BMM150 geomagnetic magnetometer sensor driver implementation
+ * @brief : BMM150 geomagnetic magnetometer sensor driver implementation with trigger mode
  * 
  * @author : louiey, louiey@thountech.com
  * 
@@ -18,7 +18,7 @@
 #include <stdlib.h>
 
 /** DEFINES (#define xx) **/
-#define BMM150_INTERRUPT_MODE
+
 /*****************************************************************/
 
 /** EXTERNS (extern xx) **/
@@ -35,23 +35,60 @@ LOG_MODULE_REGISTER(bsp_bmm150, LOG_LEVEL_INF);
 
 /** FUNCTIONS (int bsp_xx()) **/
 
+#ifdef CONFIG_BMM150_TRIGGER
+static void bmm150_trigger_handler(const struct device *dev,
+				     const struct sensor_trigger *trigger)
+{
+    struct sensor_value magn[3];
+    int ret;
+
+    ret = sensor_sample_fetch(dev);
+    if (ret < 0) {
+        LOG_ERR("BMM150 trigger fetch failed: %d", ret);
+        return;
+    }
+
+    sensor_channel_get(dev, SENSOR_CHAN_MAGN_XYZ, magn);
+
+    LOG_INF("[TRIG BMM150] Magn: X=%d.%06d, Y=%d.%06d, Z=%d.%06d uT",
+            magn[0].val1, abs(magn[0].val2),
+            magn[1].val1, abs(magn[1].val2),
+            magn[2].val1, abs(magn[2].val2));
+}
+#endif /* CONFIG_BMM150_TRIGGER */
+
 int bsp_sensor_bmm150_init(void)
 {
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(bmm150));
+    int ret = 0;
 
     if (!device_is_ready(dev)) {
         LOG_ERR("BMM150 device not ready");
         return -ENODEV;
     }
     LOG_INF("BMM150 device found: %s", dev->name);
+
+#ifdef CONFIG_BMM150_TRIGGER
+    struct sensor_trigger trig = {
+        .type = SENSOR_TRIG_DATA_READY,
+        .chan = SENSOR_CHAN_MAGN_XYZ,
+    };
+
+    ret = sensor_trigger_set(dev, &trig, bmm150_trigger_handler);
+    if (ret < 0) {
+        LOG_ERR("Failed to set BMM150 trigger: %d", ret);
+        return ret;
+    }
+    LOG_INF("BMM150 trigger/interrupt mode enabled successfully.");
+#else
+    LOG_INF("Polling mode active — use 'sensor bmm150 read' to fetch.");
 #ifdef BMM150_INTERRUPT_MODE
 
 #else
-    LOG_INF("Polling mode — reading every 1000 ms");
-
+    LOG_INF("Polling loop active");
     while (1) {
         struct sensor_value magn[3];
-        int ret = bsp_sensor_bmm150_read(magn);
+        ret = bsp_sensor_bmm150_read(magn);
         if (ret < 0) {
             LOG_ERR("BMM150 read error: %d", ret);
         } else {
@@ -62,6 +99,7 @@ int bsp_sensor_bmm150_init(void)
         }
         k_sleep(K_MSEC(1000));
     }
+#endif
 #endif
     return 0;
 }

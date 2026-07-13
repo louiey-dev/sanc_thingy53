@@ -14,7 +14,28 @@
 
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/pwm.h>
+#include <hal/nrf_gpio.h>
+#include <zephyr/init.h>
 #include "bsp.h"
+
+static int early_sensor_power_on(void)
+{
+    // Enable 3.3V regulator (P0.15 is active-low)
+    nrf_gpio_cfg_output(15);
+    nrf_gpio_pin_clear(15);
+
+    // Enable Sensor load switch (P0.31 is active-high)
+    nrf_gpio_cfg_output(31);
+    nrf_gpio_pin_set(31);
+
+    // Wait 10 ms for power to stabilize and sensors to POR
+    k_busy_wait(10000);
+
+    printk("--- EARLY SENSOR POWER ON RUNNING ---\n");
+    return 0;
+}
+
+SYS_INIT(early_sensor_power_on, PRE_KERNEL_1, 0);
 
 /** DEFINES (#define xx) **/
 
@@ -40,11 +61,7 @@ static const struct gpio_dt_spec pwr_sens_pwr_ctrl_pin = GPIO_DT_SPEC_GET(DT_NOD
 static const struct gpio_dt_spec batt_measure_en_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(batt_measure_en_pin), gpios);
 
 
-static const struct gpio_dt_spec adxl_int_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(adxl_int_pin), gpios);
-static const struct gpio_dt_spec bmi_int_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(bmi_int_pin), gpios);
-static const struct gpio_dt_spec bmm_int_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(bmm_int_pin), gpios);
-static const struct gpio_dt_spec bmm_rdy_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(bmm_rdy_pin), gpios);
-static const struct gpio_dt_spec bh_int_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(bh_int_pin), gpios);
+
 static const struct gpio_dt_spec sens_pwr_ctrl_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(sens_pwr_ctrl_pin), gpios);
 
 static const struct gpio_dt_spec button0 = GPIO_DT_SPEC_GET(DT_ALIAS(sw0), gpios);
@@ -99,16 +116,8 @@ int bsp_gpio_init(void)
     MAC_CONFIG_GPIO_OR_RETURN(batt_measure_en_pin, GPIO_OUTPUT_ACTIVE);
 
 
-    // ADXL362 : Low power accelerometer
-    MAC_CONFIG_GPIO_OR_RETURN(adxl_int_pin, GPIO_INT_EDGE_RISING);
-    // BMI270@0x68 : Accelerometer and gyroscope
-    MAC_CONFIG_GPIO_OR_RETURN(bmi_int_pin, GPIO_INT_EDGE_RISING);
-    // BMM150@0x10 : Magnetometer
-    MAC_CONFIG_GPIO_OR_RETURN(bmm_int_pin, GPIO_INT_EDGE_RISING);
-    MAC_CONFIG_GPIO_OR_RETURN(bmm_rdy_pin, GPIO_INPUT);
-    // BME688@0x76 : Humidity, temperature, pressure
-    // BH1749NUC@0x38 : Color sensor
-    MAC_CONFIG_GPIO_OR_RETURN(bh_int_pin, GPIO_INT_EDGE_RISING);
+    // Sensor interrupt pins are managed automatically by their respective drivers.
+    // Do not configure them manually here to avoid overwriting their configurations.
     
     // Buzzer
 

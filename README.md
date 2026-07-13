@@ -40,9 +40,14 @@ west build
         - Tx/Rx via BLE
         - led control via IO and PWM
 - 2026.07.13
-    - add buzzer/adc for batt/gpio
+    - add buzzer/adc for batt/gpio/reset
     - add sensors bsp files
         - all sensors work with manual read mode
+        - adxl362 : interuppt line is not connected
+        - bh1749 : this is color sensor so I don't feel there needs external interrupt
+        - bme688 : pressure/humi/temp/gas sensor so I don't feel there needs external interrupt
+        - bmi270 : connected DRDY pin so continuously issues DRDY INT
+        - bmm150 : connected DRDY pin so continuously issues DRDY INT
 ---
 ## Info
 

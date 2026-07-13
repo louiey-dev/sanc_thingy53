@@ -38,7 +38,7 @@ static int cmd_system(const struct shell *sh, size_t argc, char **argv)
 {
     // For pirnts usage
     if (argc < 2) {
-        shell_error(sh, "Usage: sys nus_du/ ...");
+        shell_error(sh, "Usage: sys nus_du/reset ...");
         return -EINVAL;
     }
     
@@ -49,6 +49,15 @@ static int cmd_system(const struct shell *sh, size_t argc, char **argv)
         }
         g_Bsp.nus_duration = atoi(argv[2]);
         shell_print(sh, "NUS duration set to %d seconds", g_Bsp.nus_duration);
+        return 0;
+    } if(strcmp(argv[1], "reset") == 0 ) {
+        if (argc < 3) {
+            shell_error(sh, "Usage: sys reset <duration in seconds>");
+            return -EINVAL;
+        }
+        shell_print(sh, "System reset");
+        k_msleep(atoi(argv[2])); // sleep with given duration in msec
+        bsp_reset();
         return 0;
     } else {
         shell_error(sh, "Invalid command. Use 'nus_du'");

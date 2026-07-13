@@ -1,7 +1,7 @@
 /*
  * @file : bsp_sensor_adxl362.c
  * 
- * @brief : 
+ * @brief : Interrupt mode is not available. PCB NET is disconnected for both INT lines
  * 
  * @author : louiey, louiey@thountech.com
  * 
@@ -33,7 +33,7 @@ LOG_MODULE_REGISTER(bsp_adxl362, LOG_LEVEL_INF);
 /** FUNCTIONS (int bsp_xx()) **/
 
 #ifdef ADXL362_INTERRUPT_MODE
-static void adxl362_interrupt_handler(const struct device *dev,
+static void adxl362_trigger_handler(const struct device *dev,
 				     const struct sensor_trigger *trigger)
 {
 	struct sensor_value accel[3];
@@ -88,7 +88,7 @@ int bsp_sensor_adxl362_init(void)
 		.chan = SENSOR_CHAN_ACCEL_XYZ,
 	};
 
-	ret = sensor_trigger_set(dev, &trig, adxl362_interrupt_handler);
+	ret = sensor_trigger_set(dev, &trig, adxl362_trigger_handler);
 	if (ret < 0) {
 		LOG_ERR("Trigger set failed: %d", ret);
 		LOG_INF("Falling back to polling mode");
