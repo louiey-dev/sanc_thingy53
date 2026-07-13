@@ -23,6 +23,8 @@ extern "C" {
 #include <zephyr/kernel.h> // for bool
 #include <zephyr/logging/log.h>
 
+#include <zephyr/drivers/sensor.h>
+
 #define LOGD printk
 
 #define MSG(fmt, args...) LOGD("MSG " fmt "", ##args)
@@ -50,7 +52,7 @@ extern "C" {
 #define LED_GREEN_NODE DT_ALIAS(led1)
 #define LED_BLUE_NODE DT_ALIAS(led2)
 
-#define BSP_DEFAULT_NUS_DURATION 5 // Default NUS duration in seconds
+#define BSP_DEFAULT_NUS_DURATION 60 // Default NUS duration in seconds
 
 /* Octave 5 Frequencies (Recommended for Thingy:53 buzzer) */
 #define NOTE_DO   523
@@ -62,6 +64,21 @@ extern "C" {
 #define NOTE_SI   988
 #define NOTE_DO2  1047
 
+typedef struct BSP_SENSORS_S
+{
+    // adxl362 sensor
+
+    // bh1749 sensor
+
+    // bme688 sensor
+
+    // bmi270 sensor
+
+    // bmm150 sensor
+
+
+} BSP_SENSORS_ST;
+
 typedef struct BSP_S
 {
     bool isInit;
@@ -70,6 +87,7 @@ typedef struct BSP_S
     uint32_t led_pwm_period; // LED PWM period in mili seconds
     /************************************/
 
+    BSP_SENSORS_ST sensor;
 } BSP_ST;
 
 enum BSP_ERROR_EN
@@ -139,6 +157,19 @@ int bsp_adc_battery_err(void);
 int bsp_adc_battery_charging(void);
 int bsp_adc_battery_raw(int32_t *raw_val_out);
 int bsp_adc_battery_mv(int32_t *mv_val_out);
+
+int bsp_sensor_adxl362_init(void);
+int bsp_sensor_adxl362_read(struct sensor_value *accel);
+int bsp_sensor_bh1749_init(void);
+int bsp_sensor_bh1749_read(struct sensor_value *red, struct sensor_value *green, struct sensor_value *blue, struct sensor_value *ir);
+int bsp_sensor_bme688_init(void);
+int bsp_sensor_bme688_read(struct sensor_value *temp, struct sensor_value *press, struct sensor_value *hum, struct sensor_value *gas);
+int bsp_sensor_bmi270_init(void);
+int bsp_sensor_bmi270_read(struct sensor_value *accel, struct sensor_value *gyro);
+int bsp_sensor_bmm150_init(void);
+int bsp_sensor_bmm150_read(struct sensor_value *magn);
+int bsp_sensor_power_status(void);
+int bsp_board_power_3v3_status(void);
 
 bool bsp_uart_gets(uint8_t *pbLine);
 int bsp_reset(void);

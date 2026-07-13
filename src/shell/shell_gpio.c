@@ -40,26 +40,22 @@ static int cmd_gpio(const struct shell *sh, size_t argc, char **argv)
 
     // For pirnts usage
     if (argc < 2) {
-        shell_error(sh, "Usage: gpio init/r_mv/r_raw/charge/err");
+        shell_error(sh, "Usage: gpio init/3v/sens");
         return -EINVAL;
     }
     
     if(strcmp(argv[1], "init") == 0 ) {
-        ret = bsp_adc_init();
-    } else if(strcmp(argv[1], "r_mv") == 0) {
-        ret = bsp_adc_battery_mv(&value);
-    } else if(strcmp(argv[1], "r_raw") == 0) {
-        ret = bsp_adc_battery_raw(&value);
-    } else if(strcmp(argv[1], "charge") == 0) {
-        ret = bsp_adc_battery_charging();
-    } else if(strcmp(argv[1], "err") == 0) {
-        ret = bsp_adc_battery_err();
+        ret = bsp_gpio_init();
+    } else if(strcmp(argv[1], "3v") == 0) {
+        ret = bsp_gpio_3v3_control(atoi(argv[2]));
+    } else if(strcmp(argv[1], "sens") == 0) {
+        ret = bsp_gpio_sens_pwr_control(atoi(argv[2]));
     } else {
-        shell_error(sh, "Invalid command. Use 'init/r_mv/r_raw/charge/err'");
+        shell_error(sh, "Invalid command. Use 'init/3v/sens'");
         return -EINVAL;
     }
     return 0;
 }
 
 // Register command: "adc <offset>"
-SHELL_CMD_REGISTER(adc, NULL, "GPIO controls", cmd_gpio);
+SHELL_CMD_REGISTER(gpio, NULL, "GPIO controls", cmd_gpio);

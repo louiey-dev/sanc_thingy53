@@ -41,6 +41,8 @@ west build
         - led control via IO and PWM
 - 2026.07.13
     - add buzzer/adc for batt/gpio
+    - add sensors bsp files
+        - all sensors work with manual read mode
 ---
 ## Info
 

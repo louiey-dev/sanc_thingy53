@@ -14,6 +14,11 @@ target_sources(app PRIVATE
     src/bsp/bsp_msg_parser.c
     src/bsp/bsp_utils.c
     src/bsp/bsp_state_machine.c
+    src/bsp/bsp_sensor_adxl362.c
+    src/bsp/bsp_sensor_bh1749.c
+    src/bsp/bsp_sensor_bme688.c
+    src/bsp/bsp_sensor_bmi270.c
+    src/bsp/bsp_sensor_bmm150.c
     src/shell/shell_led.c
     src/shell/shell_led_pwm.c
     src/shell/shell_system.c

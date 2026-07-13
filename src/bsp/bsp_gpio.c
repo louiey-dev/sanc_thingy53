@@ -41,9 +41,7 @@ static const struct gpio_dt_spec batt_measure_en_pin = GPIO_DT_SPEC_GET(DT_NODEL
 
 
 static const struct gpio_dt_spec adxl_int_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(adxl_int_pin), gpios);
-static const struct gpio_dt_spec adxl_cs_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(adxl_cs_pin), gpios);
 static const struct gpio_dt_spec bmi_int_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(bmi_int_pin), gpios);
-static const struct gpio_dt_spec bmi_cs_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(bmi_cs_pin), gpios);
 static const struct gpio_dt_spec bmm_int_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(bmm_int_pin), gpios);
 static const struct gpio_dt_spec bmm_rdy_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(bmm_rdy_pin), gpios);
 static const struct gpio_dt_spec bh_int_pin = GPIO_DT_SPEC_GET(DT_NODELABEL(bh_int_pin), gpios);
@@ -103,10 +101,8 @@ int bsp_gpio_init(void)
 
     // ADXL362 : Low power accelerometer
     MAC_CONFIG_GPIO_OR_RETURN(adxl_int_pin, GPIO_INT_EDGE_RISING);
-    MAC_CONFIG_GPIO_OR_RETURN(adxl_cs_pin, GPIO_OUTPUT_ACTIVE);
     // BMI270@0x68 : Accelerometer and gyroscope
     MAC_CONFIG_GPIO_OR_RETURN(bmi_int_pin, GPIO_INT_EDGE_RISING);
-    MAC_CONFIG_GPIO_OR_RETURN(bmi_cs_pin, GPIO_OUTPUT_ACTIVE);
     // BMM150@0x10 : Magnetometer
     MAC_CONFIG_GPIO_OR_RETURN(bmm_int_pin, GPIO_INT_EDGE_RISING);
     MAC_CONFIG_GPIO_OR_RETURN(bmm_rdy_pin, GPIO_INPUT);
@@ -173,18 +169,18 @@ int bsp_gpio_3v3_control(int state)
  */
 int bsp_gpio_sens_pwr_control(int state)
 {
-    int ret = gpio_pin_set_dt(&pwr_3v3_en_pin, state);
+    int ret = gpio_pin_set_dt(&pwr_sens_pwr_ctrl_pin, state);
     if (ret < 0)
     {
         LOG_ERR("Failed to set GPIO pin %d", ret);
         return -1;
     }
-    LOG_INF("3V3 %s", state ? "ON" : "OFF");
+    LOG_INF("Sensor power 3V %s", state ? "ON" : "OFF");
     return ret;
 }
 
 /**
- * @brief Controls battery measurement
+ * @brief 
  * 
  * @param state 1 : Battery measure on, 0 : Battery measure off
  * @return int 
@@ -199,4 +195,14 @@ int bsp_gpio_battery_control(int state)
     }
     LOG_INF("Battery %s", state ? "ON" : "OFF");
     return ret;
+}
+
+int bsp_sensor_power_status(void)
+{
+    return gpio_pin_get_dt(&pwr_sens_pwr_ctrl_pin);
+}
+
+int bsp_board_power_3v3_status(void)
+{
+    return gpio_pin_get_dt(&pwr_3v3_en_pin);
 }
