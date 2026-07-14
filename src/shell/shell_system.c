@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <zephyr/shell/shell.h>
 #include "bsp.h"
-
+#include "shell_sanc.h"
 /** DEFINES (#define xx) **/
 
 /*****************************************************************/
@@ -39,24 +39,17 @@ extern const char *FW_VER_STRING;
 static int cmd_system(const struct shell *sh, size_t argc, char **argv)
 {
     // For pirnts usage
-    if (argc < 2) {
-        shell_error(sh, "Usage: sys nus_du/reset ...");
-        return -EINVAL;
-    }
-    
+    SHELL_CHECK_ARGC(sh, argc, 2, "Usage: sys nus_du/reset ...");
+
     if(strcmp(argv[1], "nus_du") == 0 ) {
-        if (argc < 3) {
-            shell_error(sh, "Usage: sys nus_du <duration in seconds>");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 3, "Usage: sys nus_du <duration in seconds>");
+
         g_Bsp.nus_duration = atoi(argv[2]);
         shell_print(sh, "NUS duration set to %d seconds", g_Bsp.nus_duration);
         return 0;
     } if(strcmp(argv[1], "reset") == 0 ) {
-        if (argc < 3) {
-            shell_error(sh, "Usage: sys reset <duration in seconds>");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 3, "Usage: sys reset <duration in seconds>");
+        
         shell_print(sh, "System reset");
         k_msleep(atoi(argv[2])); // sleep with given duration in msec
         bsp_reset();

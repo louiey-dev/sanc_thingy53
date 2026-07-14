@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <zephyr/shell/shell.h>
 #include "bsp.h"
-
+#include "shell_sanc.h"
 /** DEFINES (#define xx) **/
 
 /*****************************************************************/
@@ -39,16 +39,9 @@ static int cmd_led(const struct shell *sh, size_t argc, char **argv)
     int led_offset;
 
     // For pirnts usage
-    if (argc < 2) {
-        shell_error(sh, "Usage: led toggle/set/color ...");
-        return -EINVAL;
-    }
-    
+    SHELL_CHECK_ARGC(sh, argc, 2, "Usage: led toggle/set/color ...");
     if(strcmp(argv[1], "toggle") == 0 ) {
-        if (argc < 3) {
-            shell_error(sh, "Usage: led toggle <led_offset>");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 3, "Usage: led toggle <led_offset>");
         // led toggle command requires an offset argument
         led_offset = atoi(argv[2]);
         if(bsp_led_toggle(led_offset) < 0) {
@@ -62,10 +55,7 @@ static int cmd_led(const struct shell *sh, size_t argc, char **argv)
         }
     } else if(strcmp(argv[1], "set") == 0) {
         // led set command requires an offset and state argument
-        if (argc < 4) {
-            shell_error(sh, "Usage: led set <led_offset> <state>");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 4, "Usage: led set <led_offset> <state>");
         led_offset = atoi(argv[2]);
         if(bsp_led_control(led_offset, atoi(argv[3])) < 0) {
             shell_error(sh, "Failed to set LED%d state", led_offset);
@@ -77,10 +67,7 @@ static int cmd_led(const struct shell *sh, size_t argc, char **argv)
             return 0;
         }
     } else if(strcmp(argv[1], "color") == 0) {
-        if (argc < 3) {
-            shell_error(sh, "Usage: led color <r/g/b>");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 3, "Usage: led color <r/g/b>");
         // led set command requires an offset and state argument
         if(strcmp(argv[2], "r") == 0){
             bsp_led_control(0, 1); // Turn on RED LED

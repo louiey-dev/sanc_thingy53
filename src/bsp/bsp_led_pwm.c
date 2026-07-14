@@ -111,7 +111,7 @@ int bsp_led_pwm_red(float brightness)
 	pwm_set_pulse_dt(&green_pwm_led, 0);
 	pwm_set_pulse_dt(&blue_pwm_led, 0);
 
-    LOG_INF("Setting RED LED brightness to %.2f", brightness);
+    LOG_INF("Setting RED LED brightness to %.2f", (double)brightness);
 	return set_led(red_pwm_led, brightness);
 }
 
@@ -126,7 +126,7 @@ int bsp_led_pwm_green(float brightness)
     CHECK_PWM_INIT_OR_RETURN();
 	pwm_set_pulse_dt(&red_pwm_led, 0);
 	pwm_set_pulse_dt(&blue_pwm_led, 0);
-    LOG_INF("Setting GREEN LED brightness to %.2f", brightness);
+    LOG_INF("Setting GREEN LED brightness to %.2f", (double)brightness);
 	return set_led(green_pwm_led, brightness);
 }
 
@@ -142,7 +142,7 @@ int bsp_led_pwm_blue(float brightness)
 
 	pwm_set_pulse_dt(&red_pwm_led, 0);
 	pwm_set_pulse_dt(&green_pwm_led, 0);
-    LOG_INF("Setting BLUE LED brightness to %.2f", brightness);
+    LOG_INF("Setting BLUE LED brightness to %.2f", (double)brightness);
 	return set_led(blue_pwm_led, brightness);
 }
 
@@ -167,7 +167,7 @@ int bsp_led_pwm_set_color(float r,float g, float b, float brightness)
     pwm_set_pulse_dt(&green_pwm_led, green);
     pwm_set_pulse_dt(&blue_pwm_led, blue);
 
-    LOG_INF("Setting LED color to R: %.2f, G: %.2f, B: %.2f (Brightness: %.2f)", r, g, b, brightness);
+    LOG_INF("Setting LED color to R: %.2f, G: %.2f, B: %.2f (Brightness: %.2f)", (double)r, (double)g, (double)b, (double)brightness);
     return 0;
 }
 

@@ -16,6 +16,7 @@
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/drivers/i2c.h>
 #include "bsp.h"
+#include "shell_sanc.h"
 
 static void sensor_status_print(const struct shell *sh)
 {
@@ -81,19 +82,13 @@ static int cmd_sensors(const struct shell *sh, size_t argc, char **argv)
     int ret = 0;
 
     // For pirnts usage
-    if (argc < 2) {
-        shell_error(sh, "Usage: sensor adxl362/bh1749/bme688/bmi270/bmm150/status");
-        return -EINVAL;
-    }
-    
+    SHELL_CHECK_ARGC(sh, argc, 2, "Usage: sensor adxl362/bh1749/bme688/bmi270/bmm150/status");
+
     if(strcmp(argv[1], "status") == 0) {
         sensor_status_print(sh);
         return 0;
     } else if(strcmp(argv[1], "adxl362") == 0 ) {
-        if (argc < 3) {
-            shell_error(sh, "Usage: sensor adxl362 init/read");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 3, "Usage: sensor adxl362 init/read");
         if(strcmp(argv[2], "init") == 0) {
             ret = bsp_sensor_adxl362_init();
         } else if(strcmp(argv[2], "read") == 0) {
@@ -109,10 +104,8 @@ static int cmd_sensors(const struct shell *sh, size_t argc, char **argv)
             }
         }
     } else if(strcmp(argv[1], "bh1749") == 0) {
-        if (argc < 3) {
-            shell_error(sh, "Usage: sensor bh1749 init/read");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 3, "Usage: sensor bh1749 init/read");
+
         if(strcmp(argv[2], "init") == 0) {
             ret = bsp_sensor_bh1749_init();
         } else if(strcmp(argv[2], "read") == 0) {
@@ -126,10 +119,8 @@ static int cmd_sensors(const struct shell *sh, size_t argc, char **argv)
             }
         }
     } else if(strcmp(argv[1], "bme688") == 0) {
-        if (argc < 3) {
-            shell_error(sh, "Usage: sensor bme688 init/read");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 3, "Usage: sensor bme688 init/read");
+
         if(strcmp(argv[2], "init") == 0) {
             ret = bsp_sensor_bme688_init();
         } else if(strcmp(argv[2], "read") == 0) {
@@ -146,10 +137,8 @@ static int cmd_sensors(const struct shell *sh, size_t argc, char **argv)
             }
         }
     } else if(strcmp(argv[1], "bmi270") == 0) {
-        if (argc < 3) {
-            shell_error(sh, "Usage: sensor bmi270 init/read");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 3, "Usage: sensor bmi270 init/read");
+
         if(strcmp(argv[2], "init") == 0) {
             ret = bsp_sensor_bmi270_init();
         } else if(strcmp(argv[2], "read") == 0) {
@@ -170,10 +159,8 @@ static int cmd_sensors(const struct shell *sh, size_t argc, char **argv)
             }
         }
     } else if(strcmp(argv[1], "bmm150") == 0) {
-        if (argc < 3) {
-            shell_error(sh, "Usage: sensor bmm150 init/read");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 3, "Usage: sensor bmm150 init/read");
+        
         if(strcmp(argv[2], "init") == 0) {
             ret = bsp_sensor_bmm150_init();
         } else if(strcmp(argv[2], "read") == 0) {

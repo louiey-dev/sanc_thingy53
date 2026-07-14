@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <zephyr/shell/shell.h>
 #include "bsp.h"
-
+#include "shell_sanc.h"
 /** DEFINES (#define xx) **/
 
 /*****************************************************************/
@@ -36,52 +36,39 @@ extern BSP_ST g_Bsp;
 /** FUNCTIONS (int bsp_xx()) **/
 static int cmd_led_pwm(const struct shell *sh, size_t argc, char **argv)
 {
-    // For pirnts usage
-    if (argc < 2) {
-        shell_error(sh, "Usage: led_pwm r/g/b/color/on/off/br/bg/bb/bc ...");
-        return -EINVAL;
-    }
-    
+    // For prints usage
+    SHELL_CHECK_ARGC(sh, argc, 2, "Usage: led_pwm r/g/b/color/on/off/br/bg/bb/bc ...");
+
     if( (strcmp(argv[1], "r") == 0 ) || (strcmp(argv[1], "g") == 0) || (strcmp(argv[1], "b") == 0) )
     {
-        if (argc < 3) {
-            shell_error(sh, "Usage: led_pwm r/g/b <brightness>");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 3, "Usage: led_pwm r/g/b <brightness>");
+        double brightness = atof(argv[2]);
+
         if( strcmp(argv[1], "r") == 0 )
         {
-            if(bsp_led_pwm_red(atof(argv[2])) < 0) {
-                shell_error(sh, "Failed to set RED LED brightness");
-                return -EINVAL;
-            }
+            SHELL_CHECK_RET(bsp_led_pwm_red(brightness), sh, "Failed to set RED LED brightness, %d.%02d", LOG_FLOAT_VAL(brightness));
         }
         else if( strcmp(argv[1], "g") == 0 )
         {
-            if(bsp_led_pwm_green(atof(argv[2])) < 0) {
-                shell_error(sh, "Failed to set GREEN LED brightness");
-                return -EINVAL;
-            }
+            SHELL_CHECK_RET(bsp_led_pwm_green(brightness), sh, "Failed to set GREEN LED brightness, %d.%02d", LOG_FLOAT_VAL(brightness));
         }
         else if( strcmp(argv[1], "b") == 0 )
         {
-            if(bsp_led_pwm_blue(atof(argv[2])) < 0) {
-                shell_error(sh, "Failed to set BLUE LED brightness");
-                return -EINVAL;
-            }
+            SHELL_CHECK_RET(bsp_led_pwm_blue(brightness), sh, "Failed to set BLUE LED brightness, %d.%02d", LOG_FLOAT_VAL(brightness));
         }
-        shell_print(sh, "LED %s brightness set to %d.%02d", argv[1], LOG_FLOAT_VAL(atof(argv[2])));
+        shell_print(sh, "LED %s brightness set to %d.%02d", argv[1], LOG_FLOAT_VAL(brightness));
         return 0;
     } else if(strcmp(argv[1], "color") == 0) {
-        if (argc < 5) {
-            shell_error(sh, "Usage: led_pwm color <r> <g> <b> <brightness>");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 5, "Usage: led_pwm color <r> <g> <b> <brightness>");
         if (argc == 6) {
-            if(bsp_led_pwm_set_color(atof(argv[2]), atof(argv[3]), atof(argv[4]), atof(argv[5])) < 0) {
-                shell_error(sh, "Failed to set LED color");
-                return -EINVAL;
-            }
-            shell_print(sh, "LED color set to R: %d.%02d, G: %d.%02d, B: %d.%02d", LOG_FLOAT_VAL(atof(argv[2])), LOG_FLOAT_VAL(atof(argv[3])), LOG_FLOAT_VAL(atof(argv[4])));
+            double r_val = atof(argv[2]);
+            double g_val = atof(argv[3]);
+            double b_val = atof(argv[4]);
+            double br_val = atof(argv[5]);
+            SHELL_CHECK_RET(bsp_led_pwm_set_color(r_val, g_val, b_val, br_val), sh, 
+                    "Failed to set LED color, %d.%02d, %d.%02d, %d.%02d", 
+                    LOG_FLOAT_VAL(r_val), LOG_FLOAT_VAL(g_val), LOG_FLOAT_VAL(b_val));
+            shell_print(sh, "LED color set to R: %d.%02d, G: %d.%02d, B: %d.%02d", LOG_FLOAT_VAL(r_val), LOG_FLOAT_VAL(g_val), LOG_FLOAT_VAL(b_val));
             return 0;
         }
         else
@@ -98,14 +85,13 @@ static int cmd_led_pwm(const struct shell *sh, size_t argc, char **argv)
         shell_print(sh, "LEDs turned off");
         return 0;
     } else if(strcmp(argv[1], "br") == 0) {
-        if (argc < 3) {
-            shell_error(sh, "Usage: led_pwm br <brightness> <up> <down>");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 3, "Usage: led_pwm br <brightness> <up> <down>");
+
         if (argc == 5)
         {
-            bsp_led_pwm_blink_red(atof(argv[2]), atoi(argv[3]), atoi(argv[4]));
-            shell_print(sh, "Red LED blinked brightness - %d.%02d, up: %d, down: %d", LOG_FLOAT_VAL(atof(argv[2])), atoi(argv[3]), atoi(argv[4]));
+            double brightness = atof(argv[2]);
+            bsp_led_pwm_blink_red(brightness, atoi(argv[3]), atoi(argv[4]));
+            shell_print(sh, "Red LED blinked brightness - %d.%02d, up: %d, down: %d", LOG_FLOAT_VAL(brightness), atoi(argv[3]), atoi(argv[4]));
             return 0;
         }
         else
@@ -114,14 +100,13 @@ static int cmd_led_pwm(const struct shell *sh, size_t argc, char **argv)
             return -EINVAL;
         }
     } else if(strcmp(argv[1], "bg") == 0) {
-        if (argc < 3) {
-            shell_error(sh, "Usage: led_pwm bg <brightness> <up> <down>");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 3, "Usage: led_pwm bg <brightness> <up> <down>");
+
         if (argc == 5)
         {
-            bsp_led_pwm_blink_green(atof(argv[2]), atoi(argv[3]), atoi(argv[4]));
-            shell_print(sh, "Green LED blinked brightness - %d.%02d, up: %d, down: %d", LOG_FLOAT_VAL(atof(argv[2])), atoi(argv[3]), atoi(argv[4]));
+            double brightness = atof(argv[2]);
+            bsp_led_pwm_blink_green(brightness, atoi(argv[3]), atoi(argv[4]));
+            shell_print(sh, "Green LED blinked brightness - %d.%02d, up: %d, down: %d", LOG_FLOAT_VAL(brightness), atoi(argv[3]), atoi(argv[4]));
             return 0;
         }
         else
@@ -130,14 +115,12 @@ static int cmd_led_pwm(const struct shell *sh, size_t argc, char **argv)
             return -EINVAL;
         }
     } else if(strcmp(argv[1], "bb") == 0) {
-        if (argc < 3) {
-            shell_error(sh, "Usage: led_pwm bb <brightness> <up> <down>");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 3, "Usage: led_pwm bb <brightness> <up> <down>");
         if (argc == 5)
         {
-            bsp_led_pwm_blink_green(atof(argv[2]), atoi(argv[3]), atoi(argv[4]));
-            shell_print(sh, "Blue LED blinked brightness - %d.%02d, up: %d, down: %d", LOG_FLOAT_VAL(atof(argv[2])), atoi(argv[3]), atoi(argv[4]));
+            double brightness = atof(argv[2]);
+            bsp_led_pwm_blink_blue(brightness, atoi(argv[3]), atoi(argv[4]));
+            shell_print(sh, "Blue LED blinked brightness - %d.%02d, up: %d, down: %d", LOG_FLOAT_VAL(brightness), atoi(argv[3]), atoi(argv[4]));
             return 0;
         }
         else
@@ -146,14 +129,14 @@ static int cmd_led_pwm(const struct shell *sh, size_t argc, char **argv)
             return -EINVAL;
         }
     } else if(strcmp(argv[1], "bc") == 0) {
-        if (argc < 3) {
-            shell_error(sh, "Usage: led_pwm bc <r> <g> <b> <up> <down>");
-            return -EINVAL;
-        }
+        SHELL_CHECK_ARGC(sh, argc, 3, "Usage: led_pwm bc <r> <g> <b> <up> <down>");
         if (argc == 7)
         {
-            bsp_led_pwm_blink_color(atof(argv[2]), atof(argv[3]), atof(argv[4]), atoi(argv[5]), atoi(argv[6]));
-            shell_print(sh, "Color LED blinked brightness - r %d.%02d, g %d.%02d, b %d.%02d, up: %d, down: %d", LOG_FLOAT_VAL(atof(argv[2])), LOG_FLOAT_VAL(atof(argv[3])), LOG_FLOAT_VAL(atof(argv[4])), atoi(argv[5]), atoi(argv[6]));
+            double r_val = atof(argv[2]);
+            double g_val = atof(argv[3]);
+            double b_val = atof(argv[4]);
+            bsp_led_pwm_blink_color(r_val, g_val, b_val, atoi(argv[5]), atoi(argv[6]));
+            shell_print(sh, "Color LED blinked brightness - r %d.%02d, g %d.%02d, b %d.%02d, up: %d, down: %d", LOG_FLOAT_VAL(r_val), LOG_FLOAT_VAL(g_val), LOG_FLOAT_VAL(b_val), atoi(argv[5]), atoi(argv[6]));
             return 0;
         }
         else

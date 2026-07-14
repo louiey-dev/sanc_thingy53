@@ -100,7 +100,7 @@ enum BSP_ERROR_EN
 /***************************************************
  * MACROs
  **************************************************/
-#define MAC_CONFIG_GPIO_OR_RETURN(spec, flags)                           \
+#define MAC_CONFIG_GPIO_OR_RETURN(spec, flags)                          \
         do {                                                            \
             if (!gpio_is_ready_dt(&(spec))) {                           \
                 LOG_ERR("%s is not ready", #spec);                      \
@@ -112,11 +112,6 @@ enum BSP_ERROR_EN
                 return __ret;                                           \
             }                                                           \
         } while (0)
-
-#define LOG_FLOAT_FMT "%d.%02d"
-#define LOG_FLOAT_VAL(f) \
-    ((int)(f)), \
-    ((int)(((f) - (int)(f)) * 100.0f < 0 ? -(((f) - (int)(f)) * 100.0f) : (((f) - (int)(f)) * 100.0f)))
 
 /**************************************************/
 

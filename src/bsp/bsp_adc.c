@@ -28,7 +28,7 @@ extern BSP_ST g_Bsp;
 /*****************************************************************/
 
 /** STATICS (static xx) **/
-static const struct device *adc_dev = DEVICE_DT_GET(DT_NODELABEL(adc));
+// static const struct device *adc_dev = DEVICE_DT_GET(DT_NODELABEL(adc));
 
 static const struct gpio_dt_spec m_powerGpio = GPIO_DT_SPEC_GET(VBATT, power_gpios);
 static const struct gpio_dt_spec m_chargeGpio = GPIO_DT_SPEC_GET(ZEPHYR_USER, battery_charge_gpios);
@@ -146,8 +146,6 @@ int bsp_adc_battery_mv(int32_t *mv_val_out)
  */
 int bsp_adc_battery_raw(int32_t *raw_val_out)
 {
-	int32_t result = 0;
-
 	bsp_gpio_battery_control(1);
     int ret = adc_read(m_adc.dev, &m_adcSeq);
 	bsp_gpio_battery_control(0);

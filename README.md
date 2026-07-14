@@ -49,6 +49,8 @@ west build
         - bmi270 : connected DRDY pin so continuously issues DRDY INT
         - bmm150 : connected DRDY pin so continuously issues DRDY INT
     - add GPIO control for FEM/PMIC
+- 2026.07.14
+    - minor code optimized
 ---
 ## Info
 
