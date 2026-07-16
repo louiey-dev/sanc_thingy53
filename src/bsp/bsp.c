@@ -19,6 +19,7 @@
 #include <zephyr/drivers/adc.h>
 #include <zephyr/device.h>
 #include <zephyr/drivers/pwm.h>
+#include <zephyr/bluetooth/services/nus.h>
 
 /** DEFINES (#define xx) **/
 
@@ -29,7 +30,6 @@
 /*****************************************************************/
 
 /** STATICS (static xx) **/
-
 //not calibrated, fixed for specific board
 #define PWM_PERIOD PWM_MSEC(20)
 /*****************************************************************/
@@ -49,6 +49,7 @@ int bsp_init(void)
 {
     g_Bsp.isInit = true;
     g_Bsp.nus_duration = BSP_DEFAULT_NUS_DURATION;
+    g_Bsp.sm_duration = BSP_DEFAULT_SM_DURATION;
 
     bsp_led_init();
     bsp_led_pwm_init();
@@ -92,3 +93,36 @@ int bsp_reset(void)
     return 0; // This line will not be reached, but is here to satisfy the function signature
 }
 
+/**
+ * @brief send payload via NUS
+ * 
+ * @param data payload data pointer
+ * @param len payload data length
+ * @return int 
+ */
+int bsp_nus_send(const void *data, uint16_t len)
+{
+    int err = bt_nus_send(NULL, data, len);
+
+    // print_buffer((const void *)data, len);
+
+    LOG_INF("Data send - Result: %d\n", err);
+
+    if (err < 0 && (err != -EAGAIN) && (err != -ENOTCONN)) {
+        LOG_ERR("Failed to send data over BLE NUS: %d\n", err);
+        return err;
+    }
+    return 0;
+}
+
+void print_buffer(const void *data, uint16_t len)
+{
+    LOG_INF("Array of length %d: ", len);
+    for (size_t i = 0; i < len; i++)
+    {
+        printk("%02x ", ((uint8_t *)data)[i]);
+        if( (i != 0) && (i % 8 == 0) )
+            printk("\n");
+    }
+    printk("\n");
+}

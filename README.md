@@ -43,14 +43,18 @@ west build
     - add buzzer/adc for batt/gpio/reset
     - add sensors bsp files
         - all sensors work with manual read mode
-        - adxl362 : interuppt line is not connected
-        - bh1749 : this is color sensor so I don't feel there needs external interrupt
+        - adxl362 : Low power accelerometer, interuppt line is not connected
+        - bh1749 : color sensor so I don't feel there needs external interrupt
         - bme688 : pressure/humi/temp/gas sensor so I don't feel there needs external interrupt
-        - bmi270 : connected DRDY pin so continuously issues DRDY INT
-        - bmm150 : connected DRDY pin so continuously issues DRDY INT
+        - bmi270 : Accelerometer and gyroscope, connected DRDY pin so continuously issues DRDY INT
+        - bmm150 : Magnetometer, connected DRDY pin so continuously issues DRDY INT
     - add GPIO control for FEM/PMIC
 - 2026.07.14
     - minor code optimized
+- 2026.07.16
+    - add state machine code
+    - updated msg data type for sensors
+    - add telemetry function in state machine
 ---
 ## Info
 

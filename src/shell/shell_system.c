@@ -38,7 +38,7 @@ extern const char *FW_VER_STRING;
 
 static int cmd_system(const struct shell *sh, size_t argc, char **argv)
 {
-    // For pirnts usage
+    // For prints usage
     SHELL_CHECK_ARGC(sh, argc, 2, "Usage: sys nus_du/reset ...");
 
     if(strcmp(argv[1], "nus_du") == 0 ) {

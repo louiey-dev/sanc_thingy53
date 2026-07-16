@@ -38,7 +38,7 @@ static int cmd_led(const struct shell *sh, size_t argc, char **argv)
 {
     int led_offset;
 
-    // For pirnts usage
+    // For prints usage
     SHELL_CHECK_ARGC(sh, argc, 2, "Usage: led toggle/set/color ...");
     if(strcmp(argv[1], "toggle") == 0 ) {
         SHELL_CHECK_ARGC(sh, argc, 3, "Usage: led toggle <led_offset>");

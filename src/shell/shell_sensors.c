@@ -81,7 +81,7 @@ static int cmd_sensors(const struct shell *sh, size_t argc, char **argv)
 {
     int ret = 0;
 
-    // For pirnts usage
+    // For prints usage
     SHELL_CHECK_ARGC(sh, argc, 2, "Usage: sensor adxl362/bh1749/bme688/bmi270/bmm150/status");
 
     if(strcmp(argv[1], "status") == 0) {

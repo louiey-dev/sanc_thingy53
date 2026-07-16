@@ -24,7 +24,7 @@
     },
     {
       "text": "pristine",
-      "tooltip": "build project",
+      "tooltip": "pristine",
       "color": "#FF0000",
       "command": "workbench.action.terminal.sendSequence",
       "arguments": [

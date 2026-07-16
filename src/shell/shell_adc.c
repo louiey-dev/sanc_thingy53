@@ -38,7 +38,7 @@ static int cmd_adc(const struct shell *sh, size_t argc, char **argv)
     int ret = 0;
     int32_t value = 0;
 
-    // For pirnts usage
+    // For prints usage
     SHELL_CHECK_ARGC(sh, argc, 2, "Usage: adc init/r_mv/r_raw/charge/err");
 
     if(strcmp(argv[1], "init") == 0 ) {

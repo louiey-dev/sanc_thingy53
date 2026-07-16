@@ -1,10 +1,10 @@
 /*
  * @file : bsp_sensor_bmi270.c
- * 
+ *
  * @brief : BMI270 accelerometer and gyroscope sensor driver implementation via SPI with trigger mode
- * 
+ *
  * @author : louiey, louiey@thountech.com
- * 
+ *
  * @date : 2026-07-13
  * @copyright : Copyright (c) 2026
  *
@@ -18,7 +18,7 @@
 #include <stdlib.h>
 
 /** DEFINES (#define xx) **/
-#define BMI270_INTERRUPT_MODE
+#undef CONFIG_BMI270_TRIGGER
 /*****************************************************************/
 
 /** EXTERNS (extern xx) **/
@@ -40,13 +40,14 @@ LOG_MODULE_REGISTER(bsp_bmi270, LOG_LEVEL_INF);
 
 #ifdef CONFIG_BMI270_TRIGGER
 static void bmi270_trigger_handler(const struct device *dev,
-				     const struct sensor_trigger *trigger)
+                                   const struct sensor_trigger *trigger)
 {
     struct sensor_value accel[3];
     struct sensor_value gyro[3];
 
     int ret = sensor_sample_fetch(dev);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         LOG_ERR("BMI270 trigger fetch failed: %d", ret);
         return;
     }
@@ -69,7 +70,8 @@ int bsp_sensor_bmi270_init(void)
 {
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(bmi270));
 
-    if (!device_is_ready(dev)) {
+    if (!device_is_ready(dev))
+    {
         LOG_ERR("BMI270 device not ready");
         return -ENODEV;
     }
@@ -81,7 +83,8 @@ int bsp_sensor_bmi270_init(void)
         .val2 = 0,
     };
     int ret = sensor_attr_set(dev, SENSOR_CHAN_ACCEL_XYZ, SENSOR_ATTR_SAMPLING_FREQUENCY, &attr);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         LOG_ERR("Failed to set BMI270 accelerometer frequency: %d", ret);
         return ret;
     }
@@ -89,7 +92,8 @@ int bsp_sensor_bmi270_init(void)
     // Set sampling frequency to enable gyroscope (200 Hz)
     attr.val1 = 200;
     ret = sensor_attr_set(dev, SENSOR_CHAN_GYRO_XYZ, SENSOR_ATTR_SAMPLING_FREQUENCY, &attr);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         LOG_ERR("Failed to set BMI270 gyroscope frequency: %d", ret);
         return ret;
     }
@@ -104,7 +108,8 @@ int bsp_sensor_bmi270_init(void)
     };
 
     ret = sensor_trigger_set(dev, &trig, bmi270_trigger_handler);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         LOG_ERR("Failed to register BMI270 data-ready trigger: %d", ret);
         return ret;
     }
@@ -114,7 +119,8 @@ int bsp_sensor_bmi270_init(void)
     // DRDY to INT1 value = BIT(2) = 0x04
     uint8_t int_map_data = 0x04;
     ret = bmi270_reg_write(dev, 0x58, &int_map_data, 1);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         LOG_ERR("Failed to map BMI270 DRDY interrupt to INT1: %d", ret);
         return ret;
     }
@@ -131,12 +137,14 @@ int bsp_sensor_bmi270_read(struct sensor_value *accel, struct sensor_value *gyro
 {
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(bmi270));
 
-    if (!device_is_ready(dev)) {
+    if (!device_is_ready(dev))
+    {
         return -ENODEV;
     }
 
     int ret = sensor_sample_fetch(dev);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         return ret;
     }
 
