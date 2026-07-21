@@ -135,7 +135,7 @@ int bsp_adc_battery_mv(int32_t *mv_val_out)
 		return -1;
     }
 	*mv_val_out = result;
-	LOG_INF("ADC mV : %d", *mv_val_out);
+	// LOG_INF("ADC mV : %d", *mv_val_out);
 	return 0;
 }
 

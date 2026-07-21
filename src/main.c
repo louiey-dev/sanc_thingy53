@@ -63,6 +63,7 @@ static void notif_enabled(bool enabled, void *ctx)
 {
 	ARG_UNUSED(ctx);
 
+	g_Bsp.nus_notif_enabled = enabled ? 1 : 0;
 	LOG_INF("%s() - %s\n", __func__, (enabled ? "Enabled" : "Disabled"));
 }
 
@@ -139,6 +140,7 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
 {
 	LOG_INF("BLE Disconnected: %d\n", reason);
 
+	g_Bsp.nus_notif_enabled = 0;
 	k_work_submit(&adv_work);
 }
 
@@ -187,21 +189,24 @@ int main(void)
 					K_THREAD_STACK_SIZEOF(nus_rx_thread_stack),
 					nus_rx_thread_entry, NULL, NULL, NULL,
 					NUS_RX_THREAD_PRIORITY, 0, K_NO_WAIT);
-
+#if 0
 	while (true)
 	{
 		const char *hello_world = "Hello World!\n";
 
 		k_sleep(K_SECONDS(g_Bsp.nus_duration));
 
-		err = bsp_nus_send(hello_world, strlen(hello_world));
-
-		if (err < 0 && (err != -EAGAIN) && (err != -ENOTCONN))
+		if(g_Bsp.nus_notif_enabled)
 		{
-			LOG_ERR("Failed to send data over BLE NUS: %d\n", err);
-			return err;
+			err = bsp_nus_send(hello_world, strlen(hello_world));
+
+			if (err < 0 && (err != -EAGAIN) && (err != -ENOTCONN))
+			{
+				LOG_ERR("Failed to send data over BLE NUS: %d\n", err);
+				// return err;
+			}
 		}
 	}
-
+#endif
 	return 0;
 }

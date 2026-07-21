@@ -54,7 +54,7 @@ extern "C"
 #define LED_BLUE_NODE DT_ALIAS(led2)
 
 #define BSP_DEFAULT_NUS_DURATION 60 // Default NUS duration in seconds
-#define BSP_DEFAULT_SM_DURATION 1000
+#define BSP_DEFAULT_SM_DURATION 1000*2
 
 /* Octave 5 Frequencies (Recommended for Thingy:53 buzzer) */
 #define NOTE_DO 523
@@ -66,58 +66,62 @@ extern "C"
 #define NOTE_SI 988
 #define NOTE_DO2 1047
 
-    typedef struct BSP_SENSORS_S
-    {
-        uint32_t init;
+typedef struct BSP_SENSORS_S
+{
+    uint32_t init;
 
-        // adxl362 sensor
+    // adxl362 sensor
 
-        // bh1749 Color sensor
-        struct sensor_value red;
-        struct sensor_value green;
-        struct sensor_value blue;
-        struct sensor_value ir;
+    // bh1749 Color sensor
+    struct sensor_value red;
+    struct sensor_value green;
+    struct sensor_value blue;
+    struct sensor_value ir;
 
-        // bme688 temp/pressure/humidity/gas sensor
-        struct sensor_value temp;
-        struct sensor_value press;
-        struct sensor_value hum;
-        struct sensor_value gas;
+    // bme688 temp/pressure/humidity/gas sensor
+    struct sensor_value temp;
+    struct sensor_value press;
+    struct sensor_value hum;
+    struct sensor_value gas;
 
-        // bmi270 Accelerometer and gyroscope sensor
-        struct sensor_value accel[3];
-        struct sensor_value gyro[3];
+    // bmi270 Accelerometer and gyroscope sensor
+    struct sensor_value accel[3];
+    struct sensor_value gyro[3];
 
-        // bmm150 Magmeto sensor
-        struct sensor_value magn[3];
+    // bmm150 Magmeto sensor
+    struct sensor_value magn[3];
 
-        // enable flag
-        uint8_t bh1749_en;
-        uint8_t bme688_en;
-        uint8_t bmi270_en;
-        uint8_t bmm150_en;
+    // enable flag
+    uint8_t bh1749_en;
+    uint8_t bme688_en;
+    uint8_t bmi270_en;
+    uint8_t bmm150_en;
 
-    } __aligned(4) BSP_SENSORS_ST;
+    int32_t batt_mv;
+} __aligned(4) BSP_SENSORS_ST;
 
-    typedef struct BSP_S
-    {
-        BSP_SENSORS_ST sensor; // 4-byte aligned sub-structure (92 bytes)
+typedef struct BSP_S
+{
+    BSP_SENSORS_ST sensor; // 4-byte aligned sub-structure (92 bytes)
 
-        uint32_t led_pwm_period; // 2-byte aligned
-        uint16_t nus_duration;   // 2-byte aligned
-        uint16_t sm_duration;    // sleep duration time in msec
+    uint32_t led_pwm_period; // 2-byte aligned
+    uint16_t nus_duration;   // 2-byte aligned
+    uint16_t sm_duration;    // sleep duration time in msec
 
-        uint8_t state_machine_en; // 1 : state machine is enabled, 0 : disabled
+    uint8_t state_machine_en; // 1 : state machine is enabled, 0 : disabled
+    uint8_t nus_notif_enabled; // 1 : NUS notification is enabled, 0 : disabled
 
-        uint8_t isInit;
-    } __aligned(4) BSP_ST;
+    uint8_t isInit;
+    uint8_t isSensorLogEnable;
 
-    enum BSP_ERROR_EN
-    {
-        BSP_OK = 0,
-        BSP_ERR = -1,
-        BSP_NG = -2
-    };
+} __aligned(4) BSP_ST;
+
+enum BSP_ERROR_EN
+{
+    BSP_OK = 0,
+    BSP_ERR = -1,
+    BSP_NG = -2
+};
 
 /***************************************************
  * MACROs

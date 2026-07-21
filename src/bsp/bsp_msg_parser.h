@@ -77,10 +77,13 @@ extern "C"
         MSG_RES_STATS = 0x13,
         MSG_SET_SENSOR_INIT = 0x14, // on/off
         MSG_RES_SENSOR_INIT = 0x15,
-        MSG_SET_TELEMETRY = 0x16, // on/off
-        MSG_RES_TELEMETRY = 0x17,
+        MSG_SET_SM = 0x16, // on/off
+        MSG_RES_SM = 0x17,
         MSG_SET_SM_DURATION = 0x18, // duration in ms
         MSG_RES_SM_DURATION = 0x19,
+        MSG_PKT_PAYLOAD = 0x1A,
+        MSG_SET_SENSOR_LOG = 0x1B,
+        MSG_RES_SENSOR_LOG = 0x1C,
 
         MSG_MAX
     } msg_id_t;

@@ -66,6 +66,9 @@ west build
 - 2026.07.21
     - add OTA feature
         - tested with dfu_application.zip and zephyr.signed.bin. Both are work with OTA
+    - add Payload upload API
+        - All sensors + Battery mV
+
 ---
 ## Info
 

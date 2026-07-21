@@ -40,7 +40,7 @@ extern BSP_ST g_Bsp;
 static int cmd_system(const struct shell *sh, size_t argc, char **argv)
 {
     // For prints usage
-    SHELL_CHECK_ARGC(sh, argc, 2, "Usage: sys nus_du/reset ...");
+    SHELL_CHECK_ARGC(sh, argc, 2, "Usage: sys nus_du/nus_stat/reset ...");
 
     if (strcmp(argv[1], "nus_du") == 0)
     {
@@ -48,6 +48,11 @@ static int cmd_system(const struct shell *sh, size_t argc, char **argv)
 
         g_Bsp.nus_duration = atoi(argv[2]);
         shell_print(sh, "NUS duration set to %d seconds", g_Bsp.nus_duration);
+        return 0;
+    }
+    if (strcmp(argv[1], "nus_stat") == 0)
+    {
+        shell_print(sh, "NUS Notifications: %s", g_Bsp.nus_notif_enabled ? "Enabled" : "Disabled");
         return 0;
     }
     if (strcmp(argv[1], "reset") == 0)
@@ -67,7 +72,7 @@ static int cmd_system(const struct shell *sh, size_t argc, char **argv)
     }
     else
     {
-        shell_error(sh, "Invalid command. Use 'nus_du'");
+        shell_error(sh, "Invalid command. Use 'nus_du', 'nus_stat', 'reset', or 'ver'");
         return -EINVAL;
     }
     return 0;

@@ -141,17 +141,23 @@ static void msg_parser(uint8_t msg_id, const uint8_t *data, uint8_t len)
         bsp_msg_send(MSG_RES_SENSOR_INIT, NULL, 0);
         break;
 
-    case MSG_SET_TELEMETRY:
+    case MSG_SET_SM:
         // g_Bsp.state_machine_en = data[0];
         LOG_INF("Set telemetry: %d", data[0]);
         if (data[0])
             bsp_state_machine_start();
         else
             bsp_state_machine_stop();
-        bsp_msg_send(MSG_RES_TELEMETRY, NULL, 0);
+        bsp_msg_send(MSG_RES_SM, NULL, 0);
         break;
 
     case MSG_SET_SM_DURATION:
+        break;
+    
+    case MSG_SET_SENSOR_LOG:
+        g_Bsp.isSensorLogEnable = data[0];
+        bsp_msg_send(MSG_RES_SENSOR_LOG, NULL, 0);
+        LOG_INF("Set sensor log: %s", g_Bsp.isSensorLogEnable? "enabled": "disabled");
         break;
 
     default:
@@ -165,7 +171,7 @@ int bsp_msg_send(uint8_t msg_id, const uint8_t *data, uint8_t len)
 {
     if (len > 0 && data != NULL)
     {
-        // LOG_INF("[%s] send msg_id : 0x%02x, len : %d, data : %.*s", __func__, msg_id, len, len, (const char *)data);
+        LOG_INF("[%s] send msg_id : 0x%02x, len : %d, data : %.*s", __func__, msg_id, len, len, (const char *)data);
     }
     else
     {

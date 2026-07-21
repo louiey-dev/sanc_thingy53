@@ -56,58 +56,76 @@ static void bsp_state_machine_work_handler(struct k_work *work)
             // Read bh1749 color sensor
             if (bsp_sensor_bh1749_read(&g_Bsp.sensor.red, &g_Bsp.sensor.green, &g_Bsp.sensor.blue, &g_Bsp.sensor.ir) < 0)
                 LOG_ERR("bsp_sensor_bh1749_read failed");
-
-            LOG_INF("Red: %d, Green: %d, Blue: %d, IR: %d",
-                    g_Bsp.sensor.red.val1, g_Bsp.sensor.green.val1, g_Bsp.sensor.blue.val1, g_Bsp.sensor.ir.val1);
         }
         if (g_Bsp.sensor.bme688_en)
         {
             // Read bme688 temp/press/hum/gas sensor
             if (bsp_sensor_bme688_read(&g_Bsp.sensor.temp, &g_Bsp.sensor.press, &g_Bsp.sensor.hum, &g_Bsp.sensor.gas) < 0)
                 LOG_ERR("bsp_sensor_bme688_read failed");
-
-            LOG_INF("Temp: %d.%03d C, Press: %d.%03d kPa, Hum: %d.%03d %%, Gas: %d ohm",
-                    g_Bsp.sensor.temp.val1, abs(g_Bsp.sensor.temp.val2),
-                    g_Bsp.sensor.press.val1, abs(g_Bsp.sensor.press.val2),
-                    g_Bsp.sensor.hum.val1, abs(g_Bsp.sensor.hum.val2),
-                    g_Bsp.sensor.gas.val1);
         }
         if (g_Bsp.sensor.bmi270_en)
         {
             // Read bmi270 IMU
             if (bsp_sensor_bmi270_read(g_Bsp.sensor.accel, g_Bsp.sensor.gyro) < 0)
                 LOG_ERR("bsp_sensor_bmi270_read failed");
-
-            LOG_INF("Accel: X=%d.%06d, Y=%d.%06d, Z=%d.%06d m/ss",
-                    g_Bsp.sensor.accel[0].val1, abs(g_Bsp.sensor.accel[0].val2),
-                    g_Bsp.sensor.accel[1].val1, abs(g_Bsp.sensor.accel[1].val2),
-                    g_Bsp.sensor.accel[2].val1, abs(g_Bsp.sensor.accel[2].val2));
-            LOG_INF("Gyro: X=%d.%06d, Y=%d.%06d, Z=%d.%06d rad/s",
-                    g_Bsp.sensor.gyro[0].val1, abs(g_Bsp.sensor.gyro[0].val2),
-                    g_Bsp.sensor.gyro[1].val1, abs(g_Bsp.sensor.gyro[1].val2),
-                    g_Bsp.sensor.gyro[2].val1, abs(g_Bsp.sensor.gyro[2].val2));
         }
         if (g_Bsp.sensor.bmm150_en)
         {
             // Read bmm150 magnetometer
             if (bsp_sensor_bmm150_read(g_Bsp.sensor.magn) < 0)
                 LOG_ERR("bsp_sensor_bmm150_read failed");
-
-            LOG_INF("MAGNETO: X=%d.%06d, Y=%d.%06d, Z=%d.%06d uT",
-                    g_Bsp.sensor.magn[0].val1, abs(g_Bsp.sensor.magn[0].val2),
-                    g_Bsp.sensor.magn[1].val1, abs(g_Bsp.sensor.magn[1].val2),
-                    g_Bsp.sensor.magn[2].val1, abs(g_Bsp.sensor.magn[2].val2));
         }
-#if 1
+        bsp_adc_battery_mv(&g_Bsp.sensor.batt_mv);
         /* make telemetry json format */
-#if 0
-        int len = snprintf(telemetry_json, sizeof(telemetry_json),
-                           "data: {\"ts\":0,\"seq\":%d,\"r\":%d,\"g\":%d,\"b\":%d,\"ir\":%d,\"temp\":%d.%01d,\"press\":%d.%01d,\"hum\":%d.%01d,\"gas\":%d,\"x\":%d}",
-                           m_tick++, g_Bsp.sensor.red.val1, g_Bsp.sensor.green.val1, g_Bsp.sensor.blue.val1, g_Bsp.sensor.ir.val1,
-                           g_Bsp.sensor.temp.val1, abs(g_Bsp.sensor.temp.val2),
-                           g_Bsp.sensor.press.val1, abs(g_Bsp.sensor.press.val2),
-                           g_Bsp.sensor.hum.val1, abs(g_Bsp.sensor.hum.val2),
-                           g_Bsp.sensor.gas.val1, g_Bsp.sensor.accel[0].val1);
+#if 1
+        uint8_t offset = 0;
+        memset(telemetry_json, 0, sizeof(telemetry_json));
+        telemetry_json[offset++] = g_Bsp.sensor.red.val1>>8;
+        telemetry_json[offset++] = g_Bsp.sensor.red.val1;
+        telemetry_json[offset++] = g_Bsp.sensor.green.val1>>8;
+        telemetry_json[offset++] = g_Bsp.sensor.green.val1;
+        telemetry_json[offset++] = g_Bsp.sensor.blue.val1>>8;
+        telemetry_json[offset++] = g_Bsp.sensor.blue.val1;
+        telemetry_json[offset++] = g_Bsp.sensor.ir.val1>>8;
+        telemetry_json[offset++] = g_Bsp.sensor.ir.val1;
+        telemetry_json[offset++] = g_Bsp.sensor.temp.val1;
+        telemetry_json[offset++] = g_Bsp.sensor.temp.val2;
+        telemetry_json[offset++] = g_Bsp.sensor.press.val1;
+        telemetry_json[offset++] = g_Bsp.sensor.press.val2;
+        telemetry_json[offset++] = g_Bsp.sensor.hum.val1;
+        telemetry_json[offset++] = g_Bsp.sensor.hum.val2;
+        telemetry_json[offset++] = g_Bsp.sensor.accel[0].val1;
+        telemetry_json[offset++] = g_Bsp.sensor.accel[0].val2;
+        telemetry_json[offset++] = g_Bsp.sensor.accel[1].val1;
+        telemetry_json[offset++] = g_Bsp.sensor.accel[1].val2;
+        telemetry_json[offset++] = g_Bsp.sensor.accel[2].val1;
+        telemetry_json[offset++] = g_Bsp.sensor.accel[2].val2;
+        telemetry_json[offset++] = g_Bsp.sensor.gyro[0].val1;
+        telemetry_json[offset++] = g_Bsp.sensor.gyro[0].val2;
+        telemetry_json[offset++] = g_Bsp.sensor.gyro[1].val1;
+        telemetry_json[offset++] = g_Bsp.sensor.gyro[1].val2;
+        telemetry_json[offset++] = g_Bsp.sensor.gyro[2].val1;
+        telemetry_json[offset++] = g_Bsp.sensor.gyro[2].val2;
+        telemetry_json[offset++] = g_Bsp.sensor.magn[0].val1;
+        telemetry_json[offset++] = g_Bsp.sensor.magn[0].val2;
+        telemetry_json[offset++] = g_Bsp.sensor.magn[1].val1;
+        telemetry_json[offset++] = g_Bsp.sensor.magn[1].val2;
+        telemetry_json[offset++] = g_Bsp.sensor.magn[2].val1;
+        telemetry_json[offset++] = g_Bsp.sensor.magn[2].val2;
+        telemetry_json[offset++] = g_Bsp.sensor.batt_mv>>8;
+        telemetry_json[offset++] = g_Bsp.sensor.batt_mv;
+
+        bsp_msg_send(MSG_PKT_PAYLOAD, telemetry_json, offset);
+
+        if(g_Bsp.isSensorLogEnable){
+            LOG_INF("temp : %d.%01d, press : %d.%01d, hum : %d.%01d, gas :%d, accel : %d.%01d, %d.%01d, %d.%01d, gyro : %d.%01d, %d.%01d, %d.%01d, magn : %d.%01d, %d.%01d, %d.%01d, re : %d, gr : %d, bl : %d, ir : %d, batt : %d",
+                            g_Bsp.sensor.temp.val1, abs(g_Bsp.sensor.temp.val2), g_Bsp.sensor.press.val1, abs(g_Bsp.sensor.press.val2), g_Bsp.sensor.hum.val1, abs(g_Bsp.sensor.hum.val2), g_Bsp.sensor.gas.val1,
+                           g_Bsp.sensor.accel[0].val1, abs(g_Bsp.sensor.accel[0].val2), g_Bsp.sensor.accel[1].val1, abs(g_Bsp.sensor.accel[1].val2), g_Bsp.sensor.accel[2].val1, abs(g_Bsp.sensor.accel[2].val2),
+                           g_Bsp.sensor.gyro[0].val1, abs(g_Bsp.sensor.gyro[0].val2), g_Bsp.sensor.gyro[1].val1, abs(g_Bsp.sensor.gyro[1].val2), g_Bsp.sensor.gyro[2].val1, abs(g_Bsp.sensor.gyro[2].val2),
+                           g_Bsp.sensor.magn[0].val1, abs(g_Bsp.sensor.magn[0].val2), g_Bsp.sensor.magn[1].val1, abs(g_Bsp.sensor.magn[1].val2), g_Bsp.sensor.magn[2].val1, abs(g_Bsp.sensor.magn[2].val2),
+                           g_Bsp.sensor.red.val1, g_Bsp.sensor.green.val1, g_Bsp.sensor.blue.val1, g_Bsp.sensor.ir.val1,
+                           g_Bsp.sensor.batt_mv);
+        }
 #else
         int len = snprintf(telemetry_json, sizeof(telemetry_json),
                            "data: {\"ts\":0,\"seq\":%d,\"d\":{\
@@ -122,19 +140,17 @@ static void bsp_state_machine_work_handler(struct k_work *work)
                            g_Bsp.sensor.accel[0].val1, abs(g_Bsp.sensor.accel[0].val2), g_Bsp.sensor.accel[1].val1, abs(g_Bsp.sensor.accel[1].val2), g_Bsp.sensor.accel[2].val1, abs(g_Bsp.sensor.accel[2].val2),
                            g_Bsp.sensor.gyro[0].val1, abs(g_Bsp.sensor.gyro[0].val2), g_Bsp.sensor.gyro[1].val1, abs(g_Bsp.sensor.gyro[1].val2), g_Bsp.sensor.gyro[2].val1, abs(g_Bsp.sensor.gyro[2].val2),
                            g_Bsp.sensor.magn[0].val1, abs(g_Bsp.sensor.magn[0].val2), g_Bsp.sensor.magn[1].val1, abs(g_Bsp.sensor.magn[1].val2), g_Bsp.sensor.magn[2].val1, abs(g_Bsp.sensor.magn[2].val2));
-#endif
-
         if (len >= sizeof(telemetry_json))
         {
             LOG_ERR("Telemetry JSON truncated! Formatted len: %d", len);
         }
         else
         {
-            bsp_msg_send(MSG_RES_TELEMETRY, (const uint8_t *)telemetry_json, strlen(telemetry_json));
+            bsp_msg_send(MSG_RES_SM, (const uint8_t *)telemetry_json, strlen(telemetry_json));
             LOG_INF("Telemetry JSON %d bytes: %s", len, telemetry_json);
         }
-/******************************/
 #endif
+/******************************/
     }
     else
     {

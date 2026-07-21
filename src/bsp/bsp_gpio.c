@@ -215,7 +215,7 @@ int bsp_gpio_battery_control(int state)
         LOG_ERR("Failed to set GPIO pin %d", ret);
         return -1;
     }
-    LOG_INF("Battery %s", state ? "ON" : "OFF");
+    // LOG_INF("Battery %s", state ? "ON" : "OFF");
     return ret;
 }
 

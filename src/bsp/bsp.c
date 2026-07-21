@@ -106,7 +106,7 @@ int bsp_nus_send(const void *data, uint16_t len)
 
     // print_buffer((const void *)data, len);
 
-    LOG_INF("Data send - Result: %d\n", err);
+    // LOG_INF("Data send - Result: %d\n", err);
 
     if (err < 0 && (err != -EAGAIN) && (err != -ENOTCONN)) {
         LOG_ERR("Failed to send data over BLE NUS: %d\n", err);
