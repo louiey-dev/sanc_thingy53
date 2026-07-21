@@ -95,6 +95,13 @@ int bsp_msg_parser(const char *msg, size_t len)
     return 0;
 }
 
+/**
+ * @brief Parse a BLE message block from Centrals
+ * 
+ * @param msg_id 
+ * @param data 
+ * @param len 
+ */
 static void msg_parser(uint8_t msg_id, const uint8_t *data, uint8_t len)
 {
     LOG_INF("\tmsg id : 0x%02x, len : %d, data : %.*s", msg_id, len, len, (const char *)data);
@@ -167,6 +174,14 @@ static void msg_parser(uint8_t msg_id, const uint8_t *data, uint8_t len)
         free(p);
 }
 
+/**
+ * @brief Sends all packets via BLE NUS
+ * 
+ * @param msg_id message id
+ * @param data  pointer of message payload data
+ * @param len   message payload length
+ * @return int 
+ */
 int bsp_msg_send(uint8_t msg_id, const uint8_t *data, uint8_t len)
 {
     if (len > 0 && data != NULL)

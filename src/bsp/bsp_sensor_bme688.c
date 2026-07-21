@@ -35,6 +35,11 @@ LOG_MODULE_REGISTER(bsp_bme688, LOG_LEVEL_INF);
 
 /** FUNCTIONS (int bsp_xx()) **/
 
+/**
+ * @brief Initialize the BME688 sensor
+ * 
+ * @return int 
+ */
 int bsp_sensor_bme688_init(void)
 {
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(bme688));
@@ -67,6 +72,15 @@ int bsp_sensor_bme688_init(void)
     return 0;
 }
 
+/**
+ * @brief Read BME688 sensor values
+ * 
+ * @param temp 
+ * @param press 
+ * @param hum 
+ * @param gas 
+ * @return int 
+ */
 int bsp_sensor_bme688_read(struct sensor_value *temp, struct sensor_value *press, struct sensor_value *hum, struct sensor_value *gas)
 {
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(bme688));

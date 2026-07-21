@@ -41,6 +41,11 @@ char telemetry_json[MAX_PAYLOAD] = {0};
 
 /** FUNCTIONS (int bsp_xx()) **/
 
+/**
+ * @brief  BSP state machine work handler
+ * 
+ * @param work 
+ */
 static void bsp_state_machine_work_handler(struct k_work *work)
 {
     if (!g_Bsp.state_machine_en)

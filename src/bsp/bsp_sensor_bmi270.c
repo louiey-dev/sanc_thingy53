@@ -66,6 +66,11 @@ static void bmi270_trigger_handler(const struct device *dev,
 }
 #endif /* CONFIG_BMI270_TRIGGER */
 
+/**
+ * @brief Initize the BMI270 sensor
+ * 
+ * @return int 
+ */
 int bsp_sensor_bmi270_init(void)
 {
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(bmi270));
@@ -133,6 +138,13 @@ int bsp_sensor_bmi270_init(void)
     return 0;
 }
 
+/**
+ * @brief Read the BMI270 accelerometer and gyroscope
+ * 
+ * @param accel 
+ * @param gyro 
+ * @return int 
+ */
 int bsp_sensor_bmi270_read(struct sensor_value *accel, struct sensor_value *gyro)
 {
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(bmi270));

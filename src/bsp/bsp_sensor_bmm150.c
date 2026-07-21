@@ -58,6 +58,11 @@ static void bmm150_trigger_handler(const struct device *dev,
 }
 #endif /* CONFIG_BMM150_TRIGGER */
 
+/**
+ * @brief Initialize the BMM150 sensor driver
+ * 
+ * @return int 
+ */
 int bsp_sensor_bmm150_init(void)
 {
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(bmm150));
@@ -110,6 +115,12 @@ int bsp_sensor_bmm150_init(void)
     return 0;
 }
 
+/**
+ * @brief Reads the BMM150 accelerometer
+ * 
+ * @param magn 
+ * @return int 
+ */
 int bsp_sensor_bmm150_read(struct sensor_value *magn)
 {
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(bmm150));

@@ -34,6 +34,11 @@ LOG_MODULE_REGISTER(bsp_bh1749, LOG_LEVEL_INF);
 
 /** FUNCTIONS (int bsp_xx()) **/
 
+/**
+ * @brief Initialize the BH1749 sensor.
+ * 
+ * @return int 
+ */
 int bsp_sensor_bh1749_init(void)
 {
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(bh1749));
@@ -63,6 +68,15 @@ int bsp_sensor_bh1749_init(void)
     return 0;
 }
 
+/**
+ * @brief Read the RGB-IR values from the BH1
+ * 
+ * @param red 
+ * @param green 
+ * @param blue 
+ * @param ir 
+ * @return int 
+ */
 int bsp_sensor_bh1749_read(struct sensor_value *red, struct sensor_value *green, struct sensor_value *blue, struct sensor_value *ir)
 {
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(bh1749));

@@ -115,6 +115,12 @@ int bsp_nus_send(const void *data, uint16_t len)
     return 0;
 }
 
+/**
+ * @brief print buffer array with 8 bytes per line
+ * 
+ * @param data 
+ * @param len 
+ */
 void print_buffer(const void *data, uint16_t len)
 {
     LOG_INF("Array of length %d: ", len);
