@@ -9,11 +9,12 @@
 #include <zephyr/bluetooth/services/nus.h>
 #include <zephyr/bluetooth/conn.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/mgmt/mcumgr/transport/smp_bt.h>
+
+#include <app_version.h>
 
 #include "bsp.h"
 #include "bsp_msg_parser.h"
-
-const char *FW_VER_STRING = "v0.1.0";
 
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
@@ -28,7 +29,7 @@ static const struct bt_data ad[] = {
 };
 
 static const struct bt_data sd[] = {
-	BT_DATA_BYTES(BT_DATA_UUID128_ALL, BT_UUID_NUS_SRV_VAL),
+	BT_DATA_BYTES(BT_DATA_UUID128_ALL, SMP_BT_SVC_UUID_VAL),
 };
 
 static struct k_work adv_work;
@@ -151,7 +152,7 @@ int main(void)
 	int err;
 
 	LOG_INF("sanc_thingy53 NUS Application\n");
-	LOG_INF("Firmware Version: %s\n", FW_VER_STRING);
+	LOG_INF("Firmware Version: %s\n", APP_VERSION_STRING);
 
 	bsp_init();
 

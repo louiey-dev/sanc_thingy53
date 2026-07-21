@@ -61,7 +61,6 @@ static void bmm150_trigger_handler(const struct device *dev,
 int bsp_sensor_bmm150_init(void)
 {
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(bmm150));
-    int ret = 0;
 
     if (!device_is_ready(dev))
     {
@@ -76,7 +75,7 @@ int bsp_sensor_bmm150_init(void)
         .chan = SENSOR_CHAN_MAGN_XYZ,
     };
 
-    ret = sensor_trigger_set(dev, &trig, bmm150_trigger_handler);
+    int ret = sensor_trigger_set(dev, &trig, bmm150_trigger_handler);
     if (ret < 0)
     {
         LOG_ERR("Failed to set BMM150 trigger: %d", ret);

@@ -14,14 +14,13 @@
 #include <stdlib.h>
 #include "bsp.h"
 #include "bsp_msg_parser.h"
-
+#include <app_version.h>
 /** DEFINES (#define xx) **/
 
 /*****************************************************************/
 
 /** EXTERNS (extern xx) **/
 extern BSP_ST g_Bsp;
-extern const char *FW_VER_STRING;
 /*****************************************************************/
 
 /** STATICS (static xx) **/
@@ -123,7 +122,7 @@ static void msg_parser(uint8_t msg_id, const uint8_t *data, uint8_t len)
     switch (msg_id)
     {
     case MSG_GET_VER:
-        bsp_msg_send(MSG_RES_VER, (const uint8_t *)FW_VER_STRING, (uint8_t)strlen(FW_VER_STRING));
+        bsp_msg_send(MSG_RES_VER, (const uint8_t *)APP_VERSION_STRING, (uint8_t)strlen(APP_VERSION_STRING));
         break;
 
     case MSG_GET_STATS:

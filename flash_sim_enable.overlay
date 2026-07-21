@@ -1,0 +1,11 @@
+/* Enable flash simulator in the application */
+/ {
+	soc {
+		nordic_ram-flash-controller@0 {
+			status = "okay";
+			flash_sim@0 {
+				status = "okay";
+			};
+		};
+	};
+};

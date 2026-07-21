@@ -30,6 +30,14 @@ west build
 ./flash.sh
 ```
 ---
+## OTA
+
+- For Application-Core Update Only (Standard OTA)
+    - Use signed application bin
+        - build/sanc_thingy53/zephyr/zephyr.signed.bin
+- Dual-Core Update (App + Net Cores)
+    - build/signed_by_mcuboot_and_b0_ipc_radio.bin
+---
 ## History
 
 - 2026.07.10
@@ -55,6 +63,9 @@ west build
     - add state machine code
     - updated msg data type for sensors
     - add telemetry function in state machine
+- 2026.07.21
+    - add OTA feature
+        - tested with dfu_application.zip and zephyr.signed.bin. Both are work with OTA
 ---
 ## Info
 

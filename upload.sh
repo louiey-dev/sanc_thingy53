@@ -1,0 +1,1 @@
+cp build/dfu_application.zip /mnt/d/GIT/GitHub/sanc_term/test_bin/

@@ -112,7 +112,7 @@ static void bsp_state_machine_work_handler(struct k_work *work)
         int len = snprintf(telemetry_json, sizeof(telemetry_json),
                            "data: {\"ts\":0,\"seq\":%d,\"d\":{\
 \"r\":%d,\"g\":%d,\"b\":%d,\"ir\":%d,\
-\"temp\":%d.%01d,\"press\":%d.%01d,\"hum\":%d.%01d,\"gas\":%d,\"x\":%d,\
+\"temp\":%d.%01d,\"press\":%d.%01d,\"hum\":%d.%01d,\"gas\":%d,\
 \"acc_x\":%d.%01d,\"acc_y\":%d.%01d,\"acc_z\":%d.%01d,\
 \"gyro_x\":%d.%01d,\"gyro_y\":%d.%01d,\"gyro_z\":%d.%01d,\
 \"mag_x\":%d.%01d,\"mag_y\":%d.%01d,\"mag_z\":%d.%01d}}",

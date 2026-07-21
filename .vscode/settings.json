@@ -30,6 +30,17 @@
             ]
         },
         {
+            "text": "Pristine",
+            "tooltip": "pristine build",
+            "color": "#FF0000",
+            "command": "workbench.action.terminal.sendSequence",
+            "arguments": [
+                {
+                    "text": "west build -p always -b sanc_thingy53/nrf5340/cpuapp\n"
+                }
+            ]
+        },
+        {
             "text": "Flash Jtag",
             "tooltip": "flash over Jtag",
             "color": "#FFCC00",
@@ -41,13 +52,24 @@
             ]
         },
         {
+            "text": "Flash Full",
+            "tooltip": "flash all over Jtag",
+            "color": "#FFFF00",
+            "command": "workbench.action.terminal.sendSequence",
+            "arguments": [
+                {
+                    "text": "./flash_full.sh\n"
+                }
+            ]
+        },
+        {
             "text": "Flash DFU",
             "tooltip": "flash over DFU",
             "color": "#00FFFF",
             "command": "workbench.action.terminal.sendSequence",
             "arguments": [
                 {
-                    "text": "./flash_usb\n"
+                    "text": "./flash_usb.sh\n"
                 }
             ]
         }
