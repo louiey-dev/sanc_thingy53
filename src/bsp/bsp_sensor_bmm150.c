@@ -138,5 +138,9 @@ int bsp_sensor_bmm150_read(struct sensor_value *magn)
 
     sensor_channel_get(dev, SENSOR_CHAN_MAGN_XYZ, magn);
 
+    g_Bsp.sensor.magX = sensor_value_to_float(&magn[0]);
+    g_Bsp.sensor.magY = sensor_value_to_float(&magn[1]);
+    g_Bsp.sensor.magZ = sensor_value_to_float(&magn[2]);
+
     return 0;
 }

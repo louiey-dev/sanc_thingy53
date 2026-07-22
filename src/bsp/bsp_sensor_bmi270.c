@@ -163,5 +163,12 @@ int bsp_sensor_bmi270_read(struct sensor_value *accel, struct sensor_value *gyro
     sensor_channel_get(dev, SENSOR_CHAN_ACCEL_XYZ, accel);
     sensor_channel_get(dev, SENSOR_CHAN_GYRO_XYZ, gyro);
 
+    g_Bsp.sensor.accX = sensor_value_to_float(&accel[0]);
+    g_Bsp.sensor.accY = sensor_value_to_float(&accel[1]);
+    g_Bsp.sensor.accZ = sensor_value_to_float(&accel[2]);
+    g_Bsp.sensor.gyroX = sensor_value_to_float(&gyro[0]);
+    g_Bsp.sensor.gyroY = sensor_value_to_float(&gyro[1]);
+    g_Bsp.sensor.gyroZ = sensor_value_to_float(&gyro[2]);
+
     return 0;
 }

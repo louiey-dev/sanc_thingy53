@@ -1,0 +1,75 @@
+; ---------------------------------------------------------------------------
+; Shared range definitions
+; Each field gets its OWN uniquely-named alias, even when the numeric range
+; is identical to another field's. zcbor generates one encode/decode function
+; per named type and dedups by name; reusing a single alias (e.g. "uint16")
+; across multiple fields in the same struct causes a function-name collision
+; because each map entry's generated function also embeds that field's
+; literal map key, making "identically-named" functions have different bodies.
+; ---------------------------------------------------------------------------
+
+; --- CpuTelemetry ---
+cpu_seq_t         = 0..65535
+cpu_timestamp_t   = 0..4294967295
+cpu_clock_t       = 0..65535
+
+; --- SensorData ---
+sensor_seq_t       = 0..65535
+sensor_timestamp_t = 0..4294967295
+sensor_red_t       = 0..65535
+sensor_green_t     = 0..65535
+sensor_blue_t      = 0..65535
+sensor_ir_t        = 0..65535
+sensor_batt_mv_t   = 0..65535
+
+; --- Statistics ---
+stats_uptime_t         = 0..4294967295
+stats_cpu_usage_t      = 0..65535
+stats_heap_alloc_t     = 0..65535
+stats_heap_free_t      = 0..65535
+
+; ---------------------------------------------------------------------------
+; Message types
+; ---------------------------------------------------------------------------
+
+; cpu_telemetry.cddl
+CpuTelemetry = {
+    0: uint,        ; seq
+    1: uint,  ; timestamp
+    2: float32,          ; cpu_temp
+    3: float32,          ; gpu_temp
+    4: uint,      ; cpu_clock
+}
+
+; sensor_data.cddl
+SensorData = {
+    0: uint,        ; seq
+    1: uint,  ; timestamp
+    2: uint,        ; red
+    3: uint,      ; green
+    4: uint,       ; blue
+    5: uint,         ; ir
+    6: float32,             ; temperature
+    7: float32,             ; pressure
+    8: float32,             ; humidity
+    9: uint,  ; gas_registance
+    10: float32,            ; accel_x
+    11: float32,            ; accel_y
+    12: float32,            ; accel_z
+    13: float32,            ; gyro_x
+    14: float32,            ; gyro_y
+    15: float32,            ; gyro_z
+    16: float32,            ; mag_x
+    17: float32,            ; mag_y
+    18: float32,            ; mag_z
+    19: uint,   ; batt mV
+}
+
+; statistics.cddl
+Statistics = {
+    0: uint,      ; uptime
+    1: uint,   ; cpu_usage
+    2: uint,  ; heap_allocated
+    3: uint,   ; heap_free
+    4: float32,             ; RSSI
+}

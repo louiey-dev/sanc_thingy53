@@ -166,6 +166,12 @@ static void msg_parser(uint8_t msg_id, const uint8_t *data, uint8_t len)
         bsp_msg_send(MSG_RES_SENSOR_LOG, NULL, 0);
         LOG_INF("Set sensor log: %s", g_Bsp.isSensorLogEnable? "enabled": "disabled");
         break;
+    
+    case MSG_SET_CBOR:
+        g_Bsp.isCborEnable = data[0];
+        bsp_msg_send(MSG_RES_CBOR, NULL, 0);
+        LOG_INF("Set cbor: %s", g_Bsp.isCborEnable? "enabled": "disabled");
+        break;
 
     default:
         break;

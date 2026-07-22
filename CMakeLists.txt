@@ -19,6 +19,8 @@ target_sources(app PRIVATE
     src/bsp/bsp_sensor_bme688.c
     src/bsp/bsp_sensor_bmi270.c
     src/bsp/bsp_sensor_bmm150.c
+    src/bsp/bsp_statistics.c
+    src/cbor/cbor_msg_encode.c
     src/shell/shell_led.c
     src/shell/shell_led_pwm.c
     src/shell/shell_system.c
@@ -31,4 +33,5 @@ target_sources(app PRIVATE
 target_include_directories(app PRIVATE
     src/bsp
     src/shell
+    src/cbor
 )

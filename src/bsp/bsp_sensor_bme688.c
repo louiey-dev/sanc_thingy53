@@ -99,5 +99,10 @@ int bsp_sensor_bme688_read(struct sensor_value *temp, struct sensor_value *press
     sensor_channel_get(dev, SENSOR_CHAN_HUMIDITY, hum);
     sensor_channel_get(dev, SENSOR_CHAN_GAS_RES, gas);
 
+    g_Bsp.sensor.temperature = sensor_value_to_float(temp);
+    g_Bsp.sensor.pressure = sensor_value_to_float(press);
+    g_Bsp.sensor.humidity = sensor_value_to_float(hum);
+    g_Bsp.sensor.gas_resistance = gas->val1;
+
     return 0;
 }

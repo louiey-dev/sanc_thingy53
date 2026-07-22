@@ -39,7 +39,7 @@ extern "C"
 
         [Frame Format]
         +-----------+-----------+---------+------------+-------+
-        | MAGIC_HDR | TOTAL_LEN | MSG_CNT |  MESSAGES  |  CRC  |
+        | MAGIC_HDR | TOTAL_LEN | SEQ_NO |  MESSAGES  |  CRC  |
         +-----------+-----------+---------+------------+-------+
         (2 Bytes)   (1 Byte)    (1 Byte)   (N Bytes)  (2 Bytes)
 
@@ -48,6 +48,10 @@ extern "C"
         | MSG_ID | MSG_LEN | MSG_DATA |...| MSG_ID | MSG_LEN | MSG_DATA |
         +--------+---------+----------+   +--------+---------+----------+
         (1 Byte)  (1 Byte)  (K Bytes)     (1 Byte)  (1 Byte)  (K Bytes)
+
+        TOTAL_LEN : included MAGIC_HDR
+        Byte Order : MSB (Network Order) so MSB first
+        CRC : calculates from offset 0 to len - 2. So calculates full data set include MAGIC_HDR and TOTAL_LEN.
     */
 
     /**
@@ -84,6 +88,11 @@ extern "C"
         MSG_PKT_PAYLOAD = 0x1A,
         MSG_SET_SENSOR_LOG = 0x1B,
         MSG_RES_SENSOR_LOG = 0x1C,
+        MSG_PKT_CBOR_SENSOR = 0x1D,
+        MSG_PKT_CBOR_STATS = 0x1E,
+        MSG_PKT_CBOR_CPU = 0x1F,
+        MSG_SET_CBOR = 0x20,
+        MSG_RES_CBOR = 0x21,
 
         MSG_MAX
     } msg_id_t;

@@ -77,12 +77,20 @@ typedef struct BSP_SENSORS_S
     struct sensor_value green;
     struct sensor_value blue;
     struct sensor_value ir;
+    uint16_t lightRed;
+    uint16_t lightGreen;
+    uint16_t lightBlue;
+    uint16_t lightIR;
 
     // bme688 temp/pressure/humidity/gas sensor
     struct sensor_value temp;
     struct sensor_value press;
     struct sensor_value hum;
     struct sensor_value gas;
+    float temperature;
+    float pressure;
+    float humidity;
+    int32_t gas_resistance;
 
     // bmi270 Accelerometer and gyroscope sensor
     struct sensor_value accel[3];
@@ -96,6 +104,16 @@ typedef struct BSP_SENSORS_S
     uint8_t bme688_en;
     uint8_t bmi270_en;
     uint8_t bmm150_en;
+
+    float accX;
+    float accY;
+    float accZ;
+    float gyroX;
+    float gyroY;
+    float gyroZ;
+    float magX;
+    float magY;
+    float magZ;
 
     int32_t batt_mv;
 } __aligned(4) BSP_SENSORS_ST;
@@ -113,6 +131,7 @@ typedef struct BSP_S
 
     uint8_t isInit;
     uint8_t isSensorLogEnable;
+    uint8_t isCborEnable;   // CBOR format message treansfer
 
 } __aligned(4) BSP_ST;
 
@@ -141,70 +160,71 @@ enum BSP_ERROR_EN
             return __ret;                                        \
         }                                                        \
     } while (0)
-    /**************************************************/
+/**************************************************/
 
-    /***************************************************
-     * BSP APIs
-     **************************************************/
-    int bsp_init(void);
-    int bsp_led_init(void);
-    int bsp_led_toggle(int led_offset);
-    int bsp_led_control(int led_offset, bool state);
+/***************************************************
+ * BSP APIs
+ **************************************************/
+int bsp_init(void);
+int bsp_led_init(void);
+int bsp_led_toggle(int led_offset);
+int bsp_led_control(int led_offset, bool state);
 
-    int bsp_gpio_init(void);
-    int bsp_gpio_3v3_control(int state);
-    int bsp_gpio_sens_pwr_control(int state);
-    int bsp_gpio_battery_control(int state);
-    int bsp_gpio_fem_control(int mode, int state);
-    int bsp_gpio_pmic_control(int mode, int state);
+int bsp_gpio_init(void);
+int bsp_gpio_3v3_control(int state);
+int bsp_gpio_sens_pwr_control(int state);
+int bsp_gpio_battery_control(int state);
+int bsp_gpio_fem_control(int mode, int state);
+int bsp_gpio_pmic_control(int mode, int state);
 
-    int bsp_buzzer_init(void);
-    int bsp_buzzer_scale(int scale, uint32_t duration_ms);
-    int bsp_buzzer_beep(uint32_t frequency_hz, uint32_t duration_ms);
-    int bsp_buzzer_tone(uint32_t frequency_hz);
+int bsp_buzzer_init(void);
+int bsp_buzzer_scale(int scale, uint32_t duration_ms);
+int bsp_buzzer_beep(uint32_t frequency_hz, uint32_t duration_ms);
+int bsp_buzzer_tone(uint32_t frequency_hz);
 
-    int bsp_led_pwm_init(void);
-    int bsp_led_pwm_red(float brightness);
-    int bsp_led_pwm_green(float brightness);
-    int bsp_led_pwm_blue(float brightness);
-    int bsp_led_pwm_set_color(float r, float g, float b, float brightness);
-    int bsp_led_pwm_on(void);
-    int bsp_led_pwm_off(void);
-    int bsp_led_pwm_blink_red(float brightness, int32_t up, int32_t down);
-    int bsp_led_pwm_blink_green(float brightness, int32_t up, int32_t down);
-    int bsp_led_pwm_blink_blue(float brightness, int32_t up, int32_t down);
-    int bsp_led_pwm_blink_color(float r, float g, float b, int32_t up, int32_t down);
+int bsp_led_pwm_init(void);
+int bsp_led_pwm_red(float brightness);
+int bsp_led_pwm_green(float brightness);
+int bsp_led_pwm_blue(float brightness);
+int bsp_led_pwm_set_color(float r, float g, float b, float brightness);
+int bsp_led_pwm_on(void);
+int bsp_led_pwm_off(void);
+int bsp_led_pwm_blink_red(float brightness, int32_t up, int32_t down);
+int bsp_led_pwm_blink_green(float brightness, int32_t up, int32_t down);
+int bsp_led_pwm_blink_blue(float brightness, int32_t up, int32_t down);
+int bsp_led_pwm_blink_color(float r, float g, float b, int32_t up, int32_t down);
 
-    int bsp_msg_parser(const char *msg, size_t len);
-    int bsp_msg_send(uint8_t msg_id, const uint8_t *data, uint8_t len);
+int bsp_msg_parser(const char *msg, size_t len);
+int bsp_msg_send(uint8_t msg_id, const uint8_t *data, uint8_t len);
 
-    int bsp_adc_init(void);
-    int bsp_adc_battery_err(void);
-    int bsp_adc_battery_charging(void);
-    int bsp_adc_battery_raw(int32_t *raw_val_out);
-    int bsp_adc_battery_mv(int32_t *mv_val_out);
+int bsp_adc_init(void);
+int bsp_adc_battery_err(void);
+int bsp_adc_battery_charging(void);
+int bsp_adc_battery_raw(int32_t *raw_val_out);
+int bsp_adc_battery_mv(int32_t *mv_val_out);
 
-    int bsp_sensor_adxl362_init(void);
-    int bsp_sensor_adxl362_read(struct sensor_value *accel);
-    int bsp_sensor_bh1749_init(void);
-    int bsp_sensor_bh1749_read(struct sensor_value *red, struct sensor_value *green, struct sensor_value *blue, struct sensor_value *ir);
-    int bsp_sensor_bme688_init(void);
-    int bsp_sensor_bme688_read(struct sensor_value *temp, struct sensor_value *press, struct sensor_value *hum, struct sensor_value *gas);
-    int bsp_sensor_bmi270_init(void);
-    int bsp_sensor_bmi270_read(struct sensor_value *accel, struct sensor_value *gyro);
-    int bsp_sensor_bmm150_init(void);
-    int bsp_sensor_bmm150_read(struct sensor_value *magn);
-    int bsp_sensor_power_status(void);
-    int bsp_board_power_3v3_status(void);
+int bsp_sensor_adxl362_init(void);
+int bsp_sensor_adxl362_read(struct sensor_value *accel);
+int bsp_sensor_bh1749_init(void);
+int bsp_sensor_bh1749_read(struct sensor_value *red, struct sensor_value *green, struct sensor_value *blue, struct sensor_value *ir);
+int bsp_sensor_bme688_init(void);
+int bsp_sensor_bme688_read(struct sensor_value *temp, struct sensor_value *press, struct sensor_value *hum, struct sensor_value *gas);
+int bsp_sensor_bmi270_init(void);
+int bsp_sensor_bmi270_read(struct sensor_value *accel, struct sensor_value *gyro);
+int bsp_sensor_bmm150_init(void);
+int bsp_sensor_bmm150_read(struct sensor_value *magn);
+int bsp_sensor_power_status(void);
+int bsp_board_power_3v3_status(void);
 
-    int bsp_state_machine_start(void);
-    int bsp_state_machine_stop(void);
+int bsp_state_machine_start(void);
+int bsp_state_machine_stop(void);
 
-    bool bsp_uart_gets(uint8_t *pbLine);
-    int bsp_reset(void);
-    int bsp_nus_send(const void *data, uint16_t len);
-    void print_buffer(const void *data, uint16_t len);
-    /**************************************************/
+bool bsp_uart_gets(uint8_t *pbLine);
+int bsp_reset(void);
+int bsp_nus_send(const void *data, uint16_t len);
+void print_buffer(const void *data, uint16_t len);
+int bsp_statistics(uint32_t* cpu_usage, uint32_t* heap_allocated, uint32_t* heap_free);
+/**************************************************/
 
 #ifdef __cplusplus
 }

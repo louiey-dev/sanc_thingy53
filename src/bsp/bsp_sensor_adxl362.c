@@ -152,5 +152,9 @@ int bsp_sensor_adxl362_read(struct sensor_value *accel)
 	sensor_channel_get(dev, SENSOR_CHAN_ACCEL_Y, &accel[1]);
 	sensor_channel_get(dev, SENSOR_CHAN_ACCEL_Z, &accel[2]);
 
+	g_Bsp.sensor.accX = sensor_value_to_float(&accel[0]);
+    g_Bsp.sensor.accY = sensor_value_to_float(&accel[1]);
+    g_Bsp.sensor.accZ = sensor_value_to_float(&accel[2]);
+	
 	return 0;
 }

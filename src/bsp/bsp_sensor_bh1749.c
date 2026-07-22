@@ -97,5 +97,10 @@ int bsp_sensor_bh1749_read(struct sensor_value *red, struct sensor_value *green,
     sensor_channel_get(dev, SENSOR_CHAN_BLUE, blue);
     sensor_channel_get(dev, SENSOR_CHAN_IR, ir);
 
+    g_Bsp.sensor.lightRed = red->val1;
+    g_Bsp.sensor.lightGreen = green->val1;
+    g_Bsp.sensor.lightBlue = blue->val1;
+    g_Bsp.sensor.lightIR = ir->val1;
+
     return 0;
 }
